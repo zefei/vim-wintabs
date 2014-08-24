@@ -10,7 +10,7 @@ CONTENTS                                                             *wintabs*
     5. FAQ ............................................ |wintabs-faq|
 
 ==============================================================================
-Intro                                                          *wintabs-intro*
+INTRO                                                          *wintabs-intro*
 
 Wintabs is a per-window buffer manager for Vim. It creates "tabs" for each 
 buffer opened in every Vim window, and displays these tabs either on |tabline| 
@@ -18,7 +18,7 @@ or |statusline|. It brings persistent contexts to Vim windows and tabs, making
 them more awesome.
 
 ==============================================================================
-Usage                                                          *wintabs-usage*
+USAGE                                                          *wintabs-usage*
 
 By default, wintabs maintains a list of tabs for each buffer opened in each 
 window, and displays them on tabline. To navigate and manage these tabs, a few 
@@ -26,7 +26,7 @@ window, and displays them on tabline. To navigate and manage these tabs, a few
 what Vim buffers/tabs have.
 
 To make full use of wintabs, it is recommended to have the following commands 
-or keys mapped, they are the essential ones:
+or keys mapped, these are the essential ones:
 
   |wintabs-commands|     mapping keys                   replacing Vim commands
   --------------------------------------------------------------------------
@@ -54,7 +54,7 @@ Below is an example of key mappings:>
 See wintabs-commands for all available commands and mappings.
 
 ==============================================================================
-Commands and mappings                                       *wintabs-commands*
+COMMANDS AND MAPPINGS                                       *wintabs-commands*
 
 These are wintab commands and their normal mode key mappings.
 
@@ -121,7 +121,7 @@ These are wintab commands and their normal mode key mappings.
                 Refresh UI. This might be needed after configuration changes.
 
 ==============================================================================
-Options                                                      *wintabs-options*
+OPTIONS                                                      *wintabs-options*
 
 *g:wintabs_display*
 values: 'tabline', 'statusline', or 'none'
