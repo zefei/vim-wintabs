@@ -16,6 +16,10 @@ window layout when switching/closing tabs:
 
 ![image](https://raw.githubusercontent.com/zefei/vim-wintabs/master/screenshots/screenshot2.gif)
 
+Wintabs manages long tablines nicely (better than Vim does!):
+
+![image](https://raw.githubusercontent.com/zefei/vim-wintabs/master/screenshots/screenshot3.png)
+
 # Installation
 
 Use your favorite package manager to install:
