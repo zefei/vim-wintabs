@@ -180,7 +180,12 @@ default: ''
 *g:wintabs_ui_modified*
 values: string
 default: ' +'
-                This sets the |'modified'| mark for modified wintabs.
+                This sets the |'modified'| mark for modified buffers.
+
+*g:wintabs_ui_readonly*
+values: string
+default: ' -'
+                This sets the |'readonly'| mark for readonly buffers.
 
 ==============================================================================
 FAQ                                                              *wintabs-faq*
