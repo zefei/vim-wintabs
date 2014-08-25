@@ -44,6 +44,7 @@ command! WintabsFirst call wintabs#go(1)
 command! WintabsLast call wintabs#go(-1)
 command! -nargs=1 WintabsMove call wintabs#move(<q-args> + 0)
 command! WintabsMaximize call wintabs#maximize()
+command! -nargs=1 WintabsDo call wintabs#do(<q-args>)
 command! WintabsRefresh call wintabs#init()
 
 " configurations

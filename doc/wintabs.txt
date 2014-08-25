@@ -100,7 +100,7 @@ These are wintab commands and their normal mode key mappings.
 
 *:WintabsOnlyVimtab*
 *<Plug>(wintabs_only_window)*
-                Close all but the current Vim tab, very much like |:tabonly|. 
+                Close all but the current Vim tab, very much like |:tabonly|.  
                 But it fails if there are modified wintabs open. This is 
                 recommended to be used to replace |:tabonly|.
 
@@ -118,13 +118,17 @@ These are wintab commands and their normal mode key mappings.
 
 *:WintabsMove* N
 *<Plug>(wintabs_move_left)* , *<Plug>(wintabs_move_right)*
-                Move the current tab to the right by N tabs, or to the left if 
-                N < 0.
+                Move the current wintab to the right by N tabs, or to the left 
+                if N < 0.
 
 *:WintabsMaximize*
 *<Plug>(wintabs_maximize)*
                 Move the current window to its own Vim tab, very much like 
                 CTRL-W T. But it also brings all of its wintabs.
+
+*:WintabsDo* {cmd}
+                Execute {cmd} for each wintab in the current window, very much 
+                like |:tabdo|.
 
 *:WintabsRefresh*
 *<Plug>(wintabs_refresh)*

@@ -246,6 +246,16 @@ function! wintabs#maximize()
   call wintabs#init()
 endfunction
 
+" execute cmd for each tab
+function! wintabs#do(cmd)
+  call wintabs#refresh_buflist(0)
+
+  for buffer in copy(w:wintabs_buflist)
+    execute 'buffer! '.buffer
+    execute a:cmd
+  endfor
+endfunction
+
 " set tabline/statusline
 function! wintabs#init()
   if g:wintabs_display == 'tabline'
