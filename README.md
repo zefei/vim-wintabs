@@ -70,6 +70,14 @@ See `:help wintabs-commands` for all available commands and mappings.
 Wintabs has a handful of configuration options, see `:help wintabs-options` for 
 details.
 
+# FAQ
+
+A: Does wintabs support Vim sessions?
+
+Q: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also 
+supports [xolox/vim-session](https://github.com/xolox/vim-session) out of the 
+box.
+
 # License
 
 MIT License.

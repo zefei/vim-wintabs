@@ -171,7 +171,10 @@ default: ' +'
 ==============================================================================
 FAQ                                                              *wintabs-faq*
 
-Nothing here yet. Report your issues on GitHub.
+A: Does wintabs support Vim sessions?
+
+Q: Yes, as long as your |'sessionoptions'| contains "globals". Wintabs also 
+supports xolox/vim-session plugin out of the box.
 
 ==============================================================================
 

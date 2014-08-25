@@ -232,20 +232,25 @@ endfunction
 
 " refresh buffer list
 function! wintabs#refresh_buflist(window)
+  let window = a:window == 0 ? winnr() : a:window
+
   " load buflist from saved value
-  let buflist = getwinvar(a:window, 'wintabs_buflist', [])
+  let buflist = getwinvar(window, 'wintabs_buflist', [])
 
   " remove stale bufs
   call filter(buflist, 's:buflisted(v:val)')
 
   " add current buf
-  let current_buffer = winbufnr(a:window)
+  let current_buffer = winbufnr(window)
   if index(buflist, current_buffer) == -1 && s:buflisted(current_buffer)
     call add(buflist, current_buffer)
   endif
 
   " save buflist
-  call setwinvar(a:window, 'wintabs_buflist', buflist)
+  call setwinvar(window, 'wintabs_buflist', buflist)
+
+  " save this to session
+  call wintabs#session#save(tabpagenr(), window, buflist)
 endfunction
 
 " private functions below

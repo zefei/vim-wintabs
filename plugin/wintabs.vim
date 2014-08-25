@@ -1,6 +1,7 @@
 if exists('g:loaded_wintabs') || v:version < 700
   finish
 endif
+let g:loaded_wintabs = 1
 
 " key mappings
 nnoremap <silent> <Plug>(wintabs_next) :<C-U>WintabsNext<CR>
@@ -70,6 +71,9 @@ endif
 call s:set('g:wintabs_ui_arrow_left', ' < ')
 call s:set('g:wintabs_ui_arrow_right', ' > ')
 call s:set('g:wintabs_ui_sep_spaceline', "\u23b9")
+
+" init session
+call wintabs#session#init()
 
 " start wintabs
 call wintabs#init()
