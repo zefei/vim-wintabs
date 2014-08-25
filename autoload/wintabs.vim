@@ -95,6 +95,27 @@ function! wintabs#only()
   call wintabs#init()
 endfunction
 
+" open all wintabs inside current vim tab in current window
+function! wintabs#all()
+  call wintabs#refresh_buflist(0)
+
+  for window in range(1, winnr('$'))
+    if window == winnr()
+      continue
+    endif
+
+    call wintabs#refresh_buflist(window)
+
+    for buffer in getwinvar(window, 'wintabs_buflist')
+      if index(w:wintabs_buflist, buffer) == -1
+        call add(w:wintabs_buflist, buffer)
+      endif
+    endfor
+  endfor
+
+  call wintabs#init()
+endfunction
+
 " close current window
 function! wintabs#close_window()
   let w:wintabs_closing = 1
@@ -181,23 +202,46 @@ function! wintabs#go(n)
   call s:switch_tab(n, 0)
 endfunction
 
-" open all wintabs inside current vim tab in current window
-function! wintabs#all()
+" move the current tab by n tabs
+function! wintabs#move(n)
   call wintabs#refresh_buflist(0)
 
-  for window in range(1, winnr('$'))
-    if window == winnr()
-      continue
-    endif
+  " do nothing if current tab isn't listed
+  let buffer = bufnr('%')
+  let pos = index(w:wintabs_buflist, buffer)
+  if pos == -1
+    return
+  endif
 
-    call wintabs#refresh_buflist(window)
+  " get new position, clamp at boundary
+  let size = len(w:wintabs_buflist)
+  let new_pos = pos + a:n
+  if new_pos < 0
+    let new_pos = 0
+  endif
+  if new_pos >= size
+    let new_pos = size - 1
+  endif
 
-    for buffer in getwinvar(window, 'wintabs_buflist')
-      if index(w:wintabs_buflist, buffer) == -1
-        call add(w:wintabs_buflist, buffer)
-      endif
-    endfor
-  endfor
+  " move
+  call remove(w:wintabs_buflist, pos)
+  call insert(w:wintabs_buflist, buffer, new_pos)
+
+  call wintabs#init()
+endfunction
+
+" move the current split window to its own Vim tab
+function! wintabs#maximize()
+  " do nothing if current Vim tab has only one window
+  if winnr('$') == 1
+    return
+  endif
+
+  call wintabs#refresh_buflist(0)
+
+  let buflist = w:wintabs_buflist
+  execute "normal! \<C-W>T"
+  let w:wintabs_buflist = buflist
 
   call wintabs#init()
 endfunction

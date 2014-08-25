@@ -24,6 +24,9 @@ nnoremap <silent> <Plug>(wintabs_tab_8) :<C-U>WintabsGo 8<CR>
 nnoremap <silent> <Plug>(wintabs_tab_9) :<C-U>WintabsGo 9<CR>
 nnoremap <silent> <Plug>(wintabs_first) :<C-U>WintabsFirst<CR>
 nnoremap <silent> <Plug>(wintabs_last) :<C-U>WintabsLast<CR>
+nnoremap <silent> <Plug>(wintabs_move_left) :<C-U>WintabsMove -1<CR>
+nnoremap <silent> <Plug>(wintabs_move_right) :<C-U>WintabsMove 1<CR>
+nnoremap <silent> <Plug>(wintabs_maximize) :<C-U>WintabsMaximize<CR>
 nnoremap <silent> <Plug>(wintabs_refresh) :<C-U>WintabsRefresh<CR>
 
 " commands
@@ -39,6 +42,8 @@ command! WintabsOnlyVimtab call wintabs#only_vimtab()
 command! -nargs=1 WintabsGo call wintabs#go(<q-args> + 0)
 command! WintabsFirst call wintabs#go(1)
 command! WintabsLast call wintabs#go(-1)
+command! -nargs=1 WintabsMove call wintabs#move(<q-args> + 0)
+command! WintabsMaximize call wintabs#maximize()
 command! WintabsRefresh call wintabs#init()
 
 " configurations
