@@ -196,7 +196,7 @@ default: ' '
 
 *g:wintabs_ui_active_higroup*
 values: string of highlight group
-default: 'Normal'
+default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
                 This sets the highlight group of the active wintab.
 
 ==============================================================================
