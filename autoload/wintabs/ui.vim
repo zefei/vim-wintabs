@@ -135,6 +135,9 @@ function! s:truncate_line(window, bufline, width)
     if !right_arrow && line_start + width < len(line)
       let right_arrow = 1
       let width -= right_arrow_len
+    elseif right_arrow && line_start + width >= len(line)
+      let right_arrow = 0
+      let width += right_arrow_len
     endif
   endfor
 
