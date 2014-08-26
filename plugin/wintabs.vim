@@ -61,18 +61,14 @@ call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])
 
 " ui
-call s:set('g:wintabs_ui_active_left', '')
-call s:set('g:wintabs_ui_active_right', '')
 call s:set('g:wintabs_ui_modified', ' +')
 call s:set('g:wintabs_ui_readonly', ' -')
-
-if g:wintabs_display == 'tabline'
-  call s:set('g:wintabs_ui_active_higroup', 'TabLineSel')
-endif
-
-if g:wintabs_display == 'statusline'
-  call s:set('g:wintabs_ui_active_higroup', 'Normal')
-endif
+call s:set('g:wintabs_ui_sep_leftmost', ' ')
+call s:set('g:wintabs_ui_sep_inbetween', '|')
+call s:set('g:wintabs_ui_sep_rightmost', '|')
+call s:set('g:wintabs_ui_active_left', ' ')
+call s:set('g:wintabs_ui_active_right', ' ')
+call s:set('g:wintabs_ui_active_higroup', 'Normal')
 
 " private
 call s:set('g:wintabs_ui_arrow_left', ' < ')

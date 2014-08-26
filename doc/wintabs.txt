@@ -167,16 +167,6 @@ default: ['gitcommit', 'vundle', 'qf', 'vimfiler']
                 ignored by wintabs.
                 Also, |unlisted-buffer|s are ignored.
 
-*g:wintabs_ui_active_higroup*
-values: string of highlight group
-default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
-                This sets the highlight group of the active wintab.
-
-*g:wintabs_ui_active_left* , *g:wintabs_ui_active_right*
-values: string
-default: ''
-                These characters are drawn around the active wintab.
-
 *g:wintabs_ui_modified*
 values: string
 default: ' +'
@@ -186,6 +176,28 @@ default: ' +'
 values: string
 default: ' -'
                 This sets the |'readonly'| mark for readonly buffers.
+
+*g:wintabs_ui_sep_leftmost*
+*g:wintabs_ui_sep_inbetween*
+*g:wintabs_ui_sep_rightmost*
+values: string
+default: ' ', '|', '|'
+                These characters are drawn before wintabs, between wintabs, 
+                and after wintabs. It's recommended that they have the same 
+                length.
+
+*g:wintabs_ui_active_left*
+*g:wintabs_ui_active_right*
+values: string
+default: ' '
+                These characters are drawn around the active wintab. 
+                '[]' and ')(' are some of the good ones. It's recommended that
+                they have the same length as separators.
+
+*g:wintabs_ui_active_higroup*
+values: string of highlight group
+default: 'Normal'
+                This sets the highlight group of the active wintab.
 
 ==============================================================================
 FAQ                                                              *wintabs-faq*

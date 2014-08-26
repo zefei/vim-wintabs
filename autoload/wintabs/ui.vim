@@ -38,7 +38,8 @@ endfunction
 function! s:get_bufline(window)
   call wintabs#refresh_buflist(a:window)
 
-  let line = ''
+  let line = g:wintabs_ui_sep_leftmost
+  let seplen = len(g:wintabs_ui_sep_inbetween)
   let active_start = 0
   let active_end = 0
   let active_higroup_len = 0
@@ -61,6 +62,14 @@ function! s:get_bufline(window)
 
     " highlight current buffer
     if buffer == winbufnr(a:window)
+      " remove last 'inbetween' separator or 'leftmost' separator
+      if line == g:wintabs_ui_sep_leftmost
+        let line = ''
+      else
+        let line = line[:-(seplen+1)]
+      endif
+
+      " add active tab markers and highlight group
       let name = g:wintabs_ui_active_left.name.g:wintabs_ui_active_right
       let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
 
@@ -68,10 +77,20 @@ function! s:get_bufline(window)
       let active_start = len(line)
       let active_end = len(line.name)
       let active_higroup_len = len('%##%##'.g:wintabs_ui_active_higroup)
+    else
+      let name = name.g:wintabs_ui_sep_inbetween
     endif
 
     let line = line.name
   endfor
+
+  if line == g:wintabs_ui_sep_leftmost
+    " remove separators if buflist is empty
+    let line = ''
+  elseif line[-3:] != '%##'
+    " change last 'inbetween' separator to 'rightmost'
+    let line = line[:-(seplen+1)].g:wintabs_ui_sep_rightmost
+  endif
 
   return [line, active_start, active_end, active_higroup_len]
 endfunction
