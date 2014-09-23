@@ -67,7 +67,7 @@ These are wintab commands and their normal mode key mappings.
                 Switch to the previous wintab.
 
 *:WintabsClose*
-*<Plug>(wintabs_close_window)*
+*<Plug>(wintabs_close)*
                 Close the current wintab. Depending on the value of 
                 |g:wintabs_autoclose|, might also close the current window.
 
@@ -99,7 +99,7 @@ These are wintab commands and their normal mode key mappings.
                 to be used to replace |:tabclose|.
 
 *:WintabsOnlyVimtab*
-*<Plug>(wintabs_only_window)*
+*<Plug>(wintabs_only_vimtab)*
                 Close all but the current Vim tab, very much like |:tabonly|.  
                 But it fails if there are modified wintabs open. This is 
                 recommended to be used to replace |:tabonly|.
