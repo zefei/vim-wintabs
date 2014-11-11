@@ -1,17 +1,17 @@
 # vim-wintabs
 
 Wintabs is a per-window buffer manager for Vim. It creates "tabs" for each 
-buffer opened in every Vim window, and displays these tabs either on tabline or 
-statusline. It brings persistent contexts to Vim windows and tabs, making them 
-more awesome.
+buffer opened in every Vim window, and displays these buffers either on tabline 
+or statusline. It brings persistent contexts to Vim windows and tabs, making 
+them more awesome.
 
 # Screenshots
 
-Wintabs with two native Vim tabs, showing tabs on tabline:
+Wintabs with two native Vim tabs, showing buffers and tabs on tabline:
 
 ![image](https://raw.githubusercontent.com/zefei/vim-wintabs/master/screenshots/screenshot1.gif)
 
-Wintabs with two Vim windows, showing tabs on statusline. It nicely preserves 
+Wintabs with two Vim windows, showing buffers on statusline. It nicely preserves 
 window layout when switching/closing tabs:
 
 ![image](https://raw.githubusercontent.com/zefei/vim-wintabs/master/screenshots/screenshot2.gif)
@@ -33,19 +33,19 @@ Use your favorite package manager to install:
 
 # Usage
 
-By default, wintabs maintains a list of tabs for each buffer opened in each 
-window, and displays them on tabline. To navigate and manage these tabs, a few 
-commands and key mappings are provided, and they are very similar to what Vim 
-buffers/tabs have.
+By default, wintabs maintains a list of buffers for each buffer opened in each 
+window, and displays them on tabline. To navigate and manage these buffers, a 
+few commands and key mappings are provided, and they are very similar to what 
+Vim buffers/tabs have.
 
 To make full use of wintabs, it is recommended to have the following commands or 
 keys mapped, these are the essential ones:
 
     commands             | mapping keys                 | replacing Vim commands
     ---------------------+------------------------------+-----------------------
-    :WintabsNext         | <Plug>(wintabs_next)         |
-    :WintabsPrevious     | <Plug>(wintabs_previous)     |
-    :WintabsClose        | <Plug>(wintabs_close)        |
+    :WintabsNext         | <Plug>(wintabs_next)         | :bn!
+    :WintabsPrevious     | <Plug>(wintabs_previous)     | :bp!
+    :WintabsClose        | <Plug>(wintabs_close)        | :bd
     :WintabsOnly         | <Plug>(wintabs_only)         |
     :WintabsCloseWindow  | <Plug>(wintabs_close_window) | :close, CTRL-W c
     :WintabsOnlyWindow   | <Plug>(wintabs_only_window)  | :only, CTRL-W o
