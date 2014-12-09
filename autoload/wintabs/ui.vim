@@ -43,6 +43,7 @@ function! s:get_bufline(window)
   let active_start = 0
   let active_end = 0
   let active_higroup_len = 0
+  let i = 1
 
   for buffer in getwinvar(a:window, 'wintabs_buflist')
     " get buffer name and normalize
@@ -58,7 +59,8 @@ function! s:get_bufline(window)
       let name = name.g:wintabs_ui_modified
     endif
 
-    let name = ' '.name.' '
+    let name = ' ' . i . ':' .name.' '
+    let i = i + 1
 
     " highlight current buffer
     if buffer == winbufnr(a:window)
