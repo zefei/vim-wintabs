@@ -26,10 +26,12 @@ function! wintabs#session#save(tabpage, window, buflist)
   for buffer in a:buflist
     call add(g:Wintabs_session[a:tabpage][a:window], bufname(buffer))
   endfor
+  let g:Str_Wintabs_session = string(g:Wintabs_session)
 endfunction
 
 " load session
 function! wintabs#session#load()
+  execute 'let g:Wintabs_session = ' . g:Str_Wintabs_session
   for [tabpage, winlist] in items(g:Wintabs_session)
     " continue if tabpage no longer exists
     if tabpage > tabpagenr('$')
@@ -41,6 +43,11 @@ function! wintabs#session#load()
       if window > tabpagewinnr(tabpage, '$')
         continue
       endif
+
+	  " continue if we have no bufnamelist
+	  if len(bufnamelist) == 0
+		  continue
+	  endif
 
       " map bufnames to bufnrs
       let buflist = []

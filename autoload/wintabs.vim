@@ -67,6 +67,9 @@ function! wintabs#close()
     if !getbufvar(buffer, '&modified')
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
+    if (g:wintabs_wipeout_buffer_onclose)
+        execute "bwipeout " . buffer
+    endif
   endif
 endfunction
 
@@ -202,6 +205,17 @@ function! wintabs#go(n)
   call s:switch_tab(n, 0)
 endfunction
 
+" move to the previous tab
+function! wintabs#previous()
+	let buffer = bufnr('#')
+	let pos = index(w:wintabs_buflist, buffer)
+	if pos == -1
+		return
+	endif
+	let pos = pos + 1
+	call wintabs#go(pos)
+endfunction
+
 " move the current tab by n tabs
 function! wintabs#move(n)
   call wintabs#refresh_buflist(0)
@@ -317,6 +331,7 @@ function! s:buflisted(buffer)
   let filetype = getbufvar(a:buffer, '&filetype', '')
   let ignored = index(g:wintabs_ignored_filetypes, filetype) != -1
   let empty = bufname(a:buffer) == '' && !getbufvar(a:buffer, '&modified')
+  ""echomsg string(a:buffer) . ": " . string(filetype) . " "  . string(ignored) . " " . string(empty)
   return buflisted(a:buffer) && !ignored && !empty
 endfunction
 
