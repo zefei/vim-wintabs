@@ -265,10 +265,9 @@ function! wintabs#init()
     endif
 
     set showtabline=2
-    set tabline=%!wintabs#ui#get_tabline()
-  end
+    execute 'set tabline='.g:wintabs_ui_tabline
 
-  if g:wintabs_display == 'statusline'
+  elseif g:wintabs_display == 'statusline'
     set laststatus=2
 
     " statusline needs constant reset to test for active window
@@ -277,10 +276,6 @@ function! wintabs#init()
       autocmd BufWinEnter,WinEnter,VimEnter * call wintabs#ui#set_statusline()
     augroup END
     call wintabs#ui#set_statusline()
-  else
-    augroup wintabs_set_statusline
-      autocmd!
-    augroup END
   endif
 endfunction
 
