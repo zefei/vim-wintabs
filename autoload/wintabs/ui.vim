@@ -44,7 +44,7 @@ function! s:get_bufline(window)
   let active_end = 0
   let active_higroup_len = 0
 
-  for buffer in getwinvar(a:window, 'wintabs_buflist')
+  for buffer in wintabs#getwinvar(a:window, 'wintabs_buflist', [])
     " get buffer name and normalize
     let name = fnamemodify(bufname(buffer), ':t')
     let name = substitute(name, '%', '%%', 'g')
@@ -52,9 +52,9 @@ function! s:get_bufline(window)
       let name = '[No Name]'
     endif
 
-    if getbufvar(buffer, '&readonly')
+    if getbufvar(buffer, '&readonly', '')
       let name = name.g:wintabs_ui_readonly
-    elseif getbufvar(buffer, '&modified')
+    elseif getbufvar(buffer, '&modified', '')
       let name = name.g:wintabs_ui_modified
     endif
 
@@ -100,7 +100,7 @@ function! s:truncate_line(window, bufline, width)
   let [line, active_start, active_end, active_higroup_len] = a:bufline
 
   " load line_start from saved value
-  let line_start = getwinvar(a:window, 'wintabs_bufline_start', 0)
+  let line_start = wintabs#getwinvar(a:window, 'wintabs_bufline_start', 0)
 
   " inflate width by length of higroup markers
   let inflated_width = a:width + active_higroup_len

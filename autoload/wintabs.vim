@@ -1,3 +1,21 @@
+if v:version >= 704
+  function! wintabs#getwinvar(winnr, key, def)
+    return getwinvar(a:winnr, a:key, a:def)
+  endfunction
+  function! wintabs#getbufvar(buf, key, def)
+    return getbufvar(a:buf, a:key, a:def)
+  endfunction
+else
+  function! wintabs#getwinvar(winnr, key, def)
+    let winvals = getwinvar(a:winnr, '')
+    return get(winvals, a:key, a:def)
+  endfunction
+  function! wintabs#getbufvar(buf, key, def)
+    let bufvals = getbufvar(a:buf, '')
+    return get(bufvals, a:key, a:def)
+  endfunction
+endif
+
 " jump to next/previous tab
 " next tab if offset == 1, previous tab if offset == -1
 " use confirm dialog if confim isn't 0
@@ -64,7 +82,7 @@ function! wintabs#close()
 
     " only remove buffer that is unmodifed
     " buffer remains modified if confirm dialog is canceled
-    if !getbufvar(buffer, '&modified')
+    if !wintabs#getbufvar(buffer, '&modified', '')
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
   endif
@@ -81,7 +99,7 @@ function! wintabs#only()
   for buffer in w:wintabs_buflist
     if buffer == bufnr('%')
       call add(buflist, buffer)
-    elseif getbufvar(buffer, '&modified')
+    elseif wintabs#getbufvar(buffer, '&modified', '')
       call add(buflist, buffer)
       let modified = 1
     endif
@@ -106,7 +124,7 @@ function! wintabs#all()
 
     call wintabs#refresh_buflist(window)
 
-    for buffer in getwinvar(window, 'wintabs_buflist')
+    for buffer in wintabs#getwinvar(window, 'wintabs_buflist', [])
       if index(w:wintabs_buflist, buffer) == -1
         call add(w:wintabs_buflist, buffer)
       endif
@@ -289,7 +307,7 @@ function! wintabs#refresh_buflist(window)
   let window = a:window == 0 ? winnr() : a:window
 
   " load buflist from saved value
-  let buflist = getwinvar(window, 'wintabs_buflist', [])
+  let buflist = wintabs#getwinvar(window, 'wintabs_buflist', [])
 
   " remove stale bufs
   call filter(buflist, 's:buflisted(v:val)')
@@ -314,9 +332,9 @@ endfunction
 " not ignored by g:wintabs_ignored_filetypes
 " not empty: no buffer name and not modified
 function! s:buflisted(buffer)
-  let filetype = getbufvar(a:buffer, '&filetype', '')
+  let filetype = wintabs#getbufvar(a:buffer, '&filetype', '')
   let ignored = index(g:wintabs_ignored_filetypes, filetype) != -1
-  let empty = bufname(a:buffer) == '' && !getbufvar(a:buffer, '&modified')
+  let empty = bufname(a:buffer) == '' && !wintabs#getbufvar(a:buffer, '&modified', '')
   return buflisted(a:buffer) && !ignored && !empty
 endfunction
 
@@ -388,7 +406,7 @@ endfunction
 " close all tabs in current window and window itself
 function! s:close_tabs_window()
   " if window doesn't set wintabs_closing, do nothing
-  if !getwinvar(0, 'wintabs_closing')
+  if !wintabs#getwinvar(0, 'wintabs_closing', '')
     return
   endif
   let w:wintabs_closing = 0
@@ -400,7 +418,7 @@ function! s:close_tabs_window()
 
   " keep modified tabs
   for buffer in w:wintabs_buflist
-    if getbufvar(buffer, '&modified')
+    if wintabs#getbufvar(buffer, '&modified', '')
       call add(buflist, buffer)
       let modified = 1
     endif
@@ -411,7 +429,7 @@ function! s:close_tabs_window()
     let w:wintabs_buflist = buflist
 
     " if current buffer should be closed (not modified), switch to first tab
-    if !getbufvar(bufnr('%'), '&modified')
+    if !wintabs#getbufvar(bufnr('%'), '&modified', '')
       call s:switch_tab(0, 0)
     endif
   else
