@@ -1,13 +1,14 @@
 " init wintab session, should be run only once
 function! wintabs#session#init()
-  " init session variable, it must start with an uppercase letter
-  let g:Wintabs_session = {}
+  " init session variable, session globals must start with an uppercase letter
+  let s:session = {}
+  let g:Wintabs_session_string = '{}'
 
   " support https://github.com/xolox/vim-session
   if exists('g:session_persist_globals')
-    call add(g:session_persist_globals, 'g:Wintabs_session')
+    call add(g:session_persist_globals, 'g:Wintabs_session_string')
   else
-    let g:session_persist_globals = ['g:Wintabs_session']
+    let g:session_persist_globals = ['g:Wintabs_session_string']
   endif
 
   " load wintabs session after Vim loading its session
@@ -16,21 +17,24 @@ endfunction
 
 " save buflist of one window to session
 function! wintabs#session#save(tabpage, window, buflist)
-  if !has_key(g:Wintabs_session, a:tabpage)
-    let g:Wintabs_session[a:tabpage] = {}
+  if !has_key(s:session, a:tabpage)
+    let s:session[a:tabpage] = {}
   endif
 
-  let g:Wintabs_session[a:tabpage][a:window] = []
+  let s:session[a:tabpage][a:window] = []
 
   " bufnr isn't persisted across sessions, but bufname is
   for buffer in a:buflist
-    call add(g:Wintabs_session[a:tabpage][a:window], bufname(buffer))
+    call add(s:session[a:tabpage][a:window], bufname(buffer))
   endfor
+
+  let g:Wintabs_session_string = string(s:session)
 endfunction
 
 " load session
 function! wintabs#session#load()
-  for [tabpage, winlist] in items(g:Wintabs_session)
+  execute 'let s:session = '.g:Wintabs_session_string
+  for [tabpage, winlist] in items(s:session)
     " continue if tabpage no longer exists
     if tabpage > tabpagenr('$')
       continue
