@@ -80,7 +80,7 @@ endif
 " private
 call s:set('g:wintabs_ui_arrow_left', ' < ')
 call s:set('g:wintabs_ui_arrow_right', ' > ')
-call s:set('g:wintabs_ui_sep_spaceline', "\u23b9")
+call s:set('g:wintabs_ui_sep_spaceline', '|')
 
 " init session
 call wintabs#session#init()
