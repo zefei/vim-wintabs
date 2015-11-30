@@ -322,7 +322,7 @@ function! wintabs#refresh_buflist(window)
   call setwinvar(window, 'wintabs_buflist', buflist)
 
   " save this to session
-  call wintabs#session#save(tabpagenr(), window, buflist)
+  call wintabs#session#save(tabpagenr(), window)
 endfunction
 
 " private functions below
