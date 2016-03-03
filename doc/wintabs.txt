@@ -167,6 +167,12 @@ default: ['gitcommit', 'vundle', 'qf', 'vimfiler']
                 ignored by wintabs.
                 Also, |unlisted-buffer|s are ignored.
 
+*g:wintabs_reverse_order*
+values: 0 or 1
+default: 0
+                This controls whether new buffers will be added to the
+                beginning of the wintabs list rather than the end.
+
 *g:wintabs_ui_modified*
 values: string
 default: ' +'

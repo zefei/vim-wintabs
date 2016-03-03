@@ -315,7 +315,11 @@ function! wintabs#refresh_buflist(window)
   " add current buf
   let current_buffer = winbufnr(window)
   if index(buflist, current_buffer) == -1 && s:buflisted(current_buffer)
-    call add(buflist, current_buffer)
+    if (g:wintabs_reverse_order)
+      call insert(buflist, current_buffer)
+    else
+      call add(buflist, current_buffer)
+    endif
   endif
 
   " save buflist
