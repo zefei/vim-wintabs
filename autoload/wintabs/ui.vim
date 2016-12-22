@@ -165,6 +165,33 @@ function! s:truncate_line(window, bufline, width)
   return line
 endfunction
 
+function! s:get_tab_name(n)
+  " show number of tabs
+  if !g:wintabs_ui_show_tab_name
+    return a:n
+  endif
+
+  " getting tab name
+  let title = ''
+  let s:taboo = get(g:, 'loaded_taboo', 0)
+  if s:taboo
+    let title = TabooTabTitle(a:n)
+  endif
+
+  if empty(title) && exists('*gettabvar')
+    let title = gettabvar(a:n, 'title')
+  endif
+
+  if empty(title)
+    let buflist = tabpagebuflist(a:n)
+    let winnr = tabpagewinnr(a:n)
+    let title = bufname(buflist[winnr - 1])
+    let title = split(title, "/")[-1]
+  endif
+
+  return title
+endfunction
+
 " generate space (vim tabs) line
 function! s:get_spaceline()
   " return empty line if there is only one space (vim tab)
@@ -176,14 +203,18 @@ function! s:get_spaceline()
   let line = g:wintabs_ui_sep_spaceline
   let length = 1
   for tab in range(1, spaces)
-    " get and normalize space name
-    let name = ' '.tab.' '
-    let length += len(name)
+    " get tab name
+    let name = s:get_tab_name(tab)
 
     " highlight current space
     if tab == tabpagenr()
+      let name = g:wintabs_ui_active_lsepgroup.name.g:wintabs_ui_active_rsepgroup
       let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
     endif
+    let name = ' '.name.' '
+
+    " get and normalize space name
+    let length += len(name)
 
     " make name clickable
     let name = '%'.tab.'T'.name.'%T'

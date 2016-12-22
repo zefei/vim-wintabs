@@ -200,6 +200,21 @@ default: ' '
                 '[]' and ')(' are some of the good ones. It's recommended that
                 they have the same length as separators.
 
+*g:wintabs_ui_show_tab_name*
+values: 0 or 1
+default: 0
+                This controls how Vim tabs will be displayed.
+                0: show a number of the tab.
+                1: show a name of the tab.
+
+*g:wintabs_ui_active_lsepgroup*
+*g:wintabs_ui_active_rsepgroup*
+values: string
+default: ' '
+                These characters are drawn around the active Vim tab.
+                '[]' and '<>' are some of the good ones. It's recommended that
+                they have the same length as separators.
+
 *g:wintabs_ui_active_higroup*
 values: string of highlight group
 default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
