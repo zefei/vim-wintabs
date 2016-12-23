@@ -167,7 +167,7 @@ endfunction
 
 function! s:get_tab_name(n)
   " show number of tabs
-  if !g:wintabs_ui_show_tab_name
+  if g:wintabs_ui_show_vimtab_name == 0
     return a:n
   endif
 
@@ -189,6 +189,10 @@ function! s:get_tab_name(n)
     let title = split(title, "/")[-1]
   endif
 
+  if g:wintabs_ui_show_vimtab_name == 2
+    let title = a:n.g:wintabs_ui_vimtab_separator.title
+  endif
+
   return title
 endfunction
 
@@ -206,15 +210,18 @@ function! s:get_spaceline()
     " get tab name
     let name = s:get_tab_name(tab)
 
+    " get and normalize space name
+    " 2 is added to length of name because we will add two separators around
+    " name
+    let length += (len(name) + 2)
+
     " highlight current space
     if tab == tabpagenr()
-      let name = g:wintabs_ui_active_lsepgroup.name.g:wintabs_ui_active_rsepgroup
+      let name = g:wintabs_ui_active_vimtab_left.name.g:wintabs_ui_active_vimtab_right
       let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
+    else
+      let name = ' '.name.' '
     endif
-    let name = ' '.name.' '
-
-    " get and normalize space name
-    let length += len(name)
 
     " make name clickable
     let name = '%'.tab.'T'.name.'%T'
