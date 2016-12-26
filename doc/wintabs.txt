@@ -205,6 +205,12 @@ values: string of highlight group
 default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
                 This sets the highlight group of the active wintab.
 
+*g:wintabs_ui_tabline*
+values: string to customize tabline
+default: '%!wintabs#ui#get_tabline()'
+                Remember to call 'wintabs#init()' if you change this value
+                after wintabs have been loaded. 
+
 ==============================================================================
 FAQ                                                              *wintabs-faq*
 
