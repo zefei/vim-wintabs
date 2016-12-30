@@ -194,7 +194,7 @@ function! s:get_tab_name(n)
   endif
 
   if g:wintabs_ui_show_vimtab_name == 2
-    let title = a:n.g:wintabs_ui_vimtab_separator.title
+    let title = a:n.':'.title
   endif
 
   return title
@@ -217,11 +217,11 @@ function! s:get_spaceline()
     " highlight current space
     if tab == tabpagenr()
       let name = g:wintabs_ui_active_vimtab_left.name.g:wintabs_ui_active_vimtab_right
-      let length += (len(name) + 2)
+      let length += len(name)
       let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
     else
       let name = ' '.name.' '
-      let length += (len(name) + 2)
+      let length += len(name)
     endif
 
     " make name clickable

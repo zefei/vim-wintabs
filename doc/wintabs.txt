@@ -206,9 +206,7 @@ default: 0
                 This controls how Vim tabs will be displayed.
                 0: show a number of the tab.
                 1: show a name of the tab.
-                2: show number and name of the tab. (<number>:<tab_name>).
-                   The symbol ':' is default separator. You can customize it
-                   by setting variable g:wintabs_ui_vimtab_separator.
+                2: show number and name of the tab (<number>:<tab_name>).
 
 *g:wintabs_ui_active_vimtab_left*
 *g:wintabs_ui_active_vimtab_right*
@@ -217,14 +215,6 @@ default: ' '
                 These characters are drawn around the active Vim tab.
                 '[]' and '<>' are some of the good ones. It's recommended that
                 they have the same length as separators.
-
-*g:wintabs_ui_vimtab_separator*
-values: string
-default: ':'
-                These character is drawn between number on vim tab and its
-                name. This symbol will be displayed only if value of
-                g:wintabs_ui_show_vimtab_name is 2. See how it works in
-                documentation of g:wintabs_ui_show_vimtab_name.
 
 *g:wintabs_ui_active_higroup*
 values: string of highlight group

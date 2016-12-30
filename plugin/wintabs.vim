@@ -72,7 +72,6 @@ call s:set('g:wintabs_ui_active_right', ' ')
 call s:set('g:wintabs_ui_show_vimtab_name', 0)
 call s:set('g:wintabs_ui_active_vimtab_left', ' ')
 call s:set('g:wintabs_ui_active_vimtab_right', ' ')
-call s:set('g:wintabs_ui_vimtab_separator', ':')
 
 if g:wintabs_display == 'tabline'
   call s:set('g:wintabs_ui_active_higroup', 'TabLineSel')
