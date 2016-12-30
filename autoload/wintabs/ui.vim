@@ -186,7 +186,11 @@ function! s:get_tab_name(n)
     let buflist = tabpagebuflist(a:n)
     let winnr = tabpagewinnr(a:n)
     let title = bufname(buflist[winnr - 1])
-    let title = split(title, "/")[-1]
+    if empty(title)
+      let title = '[No Name]'
+    else
+      let title = split(title, "/")[-1]
+    endif
   endif
 
   if g:wintabs_ui_show_vimtab_name == 2
@@ -210,17 +214,14 @@ function! s:get_spaceline()
     " get tab name
     let name = s:get_tab_name(tab)
 
-    " get and normalize space name
-    " 2 is added to length of name because we will add two separators around
-    " name
-    let length += (len(name) + 2)
-
     " highlight current space
     if tab == tabpagenr()
       let name = g:wintabs_ui_active_vimtab_left.name.g:wintabs_ui_active_vimtab_right
+      let length += (len(name) + 2)
       let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
     else
       let name = ' '.name.' '
+      let length += (len(name) + 2)
     endif
 
     " make name clickable
