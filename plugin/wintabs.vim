@@ -69,6 +69,7 @@ call s:set('g:wintabs_ui_sep_inbetween', '|')
 call s:set('g:wintabs_ui_sep_rightmost', '|')
 call s:set('g:wintabs_ui_active_left', ' ')
 call s:set('g:wintabs_ui_active_right', ' ')
+call s:set('g:wintabs_ui_tab_number', 2)
 
 if g:wintabs_display == 'tabline'
   call s:set('g:wintabs_ui_active_higroup', 'TabLineSel')

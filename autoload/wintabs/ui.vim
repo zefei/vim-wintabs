@@ -34,6 +34,22 @@ endfunction
 
 " private functions below
 
+let s:num_to_text_array = ['⁰', '¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹' ]
+
+function! s:num_to_text(i)
+  if a:i >= 0 && a:i <= 9
+    if g:wintabs_ui_tab_number == 1
+      return a:i
+    elseif g:wintabs_ui_tab_number == 2
+      return s:num_to_text_array[a:i]
+    else
+      return ''
+    endif
+  else
+    return ''
+  endif
+endfunction
+
 " generate bufline per window
 function! s:get_bufline(window)
   call wintabs#refresh_buflist(a:window)
@@ -43,6 +59,7 @@ function! s:get_bufline(window)
   let active_start = 0
   let active_end = 0
   let active_higroup_len = 0
+  let i = 0
 
   for buffer in wintabs#getwinvar(a:window, 'wintabs_buflist', [])
     " get buffer name and normalize
@@ -52,13 +69,15 @@ function! s:get_bufline(window)
       let name = '[No Name]'
     endif
 
+    let i = i + 1
+
     if getbufvar(buffer, '&readonly', '')
       let name = name.g:wintabs_ui_readonly
     elseif getbufvar(buffer, '&modified', '')
       let name = name.g:wintabs_ui_modified
     endif
 
-    let name = ' '.name.' '
+    let name = ' '.s:num_to_text(i) . name . ' '
 
     " highlight current buffer
     if buffer == winbufnr(a:window)
