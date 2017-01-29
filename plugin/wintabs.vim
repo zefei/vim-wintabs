@@ -57,6 +57,7 @@ endfunction
 " major
 call s:set('g:wintabs_display', 'tabline')
 call s:set('g:wintabs_autoclose', 1)
+call s:set('g:wintabs_autoclose_vim', 0)
 call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_reverse_order', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])

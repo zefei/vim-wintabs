@@ -151,12 +151,19 @@ default: 1
                 1: auto close only when there are no listed wintabs.
                 2: always auto close.
 
+*g:wintabs_autoclose_vim*
+values: 0 or 1
+default: 0
+                This controls whether Vim is auto closed, when the last window
+                in the only Vim tab is closed.
+                0: never auto close.
+                1: always auto close.
 
 *g:wintabs_autoclose_vimtab*
 values: 0 or 1
 default: 0
                 This controls whether the Vim tab is auto closed, when the 
-                last window is closed using |:WintabsCloseWindow|.
+                last window is closed.
                 0: never auto close.
                 1: always auto close.
 

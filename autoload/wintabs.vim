@@ -395,16 +395,24 @@ function! s:switch_tab(n, confirm)
   let &hidden = hidden
 endfunction
 
-" close current window depending on g:wintabs_autoclose_vimtab
-" assuming no open tabs
+" close current window, considering all autoclose behaviors
 function! s:close_window()
-  " don't close if this is the last window and tab autoclose is off
-  if winnr('$') > 1 || g:wintabs_autoclose_vimtab
-    confirm close
-  else
-    let w:wintabs_buflist = []
-    call s:switch_tab(-1, 1)
+  " one window, one tab => quit vim
+  if winnr('$') == 1 && tabpagenr('$') == 1 && g:wintabs_autoclose_vim
+    confirm quit
+    return
   endif
+
+  " more than one window => close window
+  " one window, more than one tab => close tab
+  if winnr('$') > 1 || tabpagenr('$') > 1 && g:wintabs_autoclose_vimtab
+    confirm close
+    return
+  endif
+
+  " otherwise close all wintabs
+  let w:wintabs_buflist = []
+  call s:switch_tab(-1, 1)
 endfunction
 
 " close all tabs in current window and window itself
