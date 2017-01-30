@@ -76,7 +76,7 @@ endfunction
 
 function! s:session_save_window(tabpage, window)
   let s:session[a:tabpage][a:window] = []
-  let buflist = gettabwinvar(a:tabpage, a:window, 'wintabs_buflist', [])
+  let buflist = wintabs#gettabwinvar(a:tabpage, a:window, 'wintabs_buflist', [])
 
   " bufnr isn't persisted across sessions, but bufname is
   for buffer in buflist

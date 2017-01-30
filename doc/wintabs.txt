@@ -167,6 +167,16 @@ default: 0
                 0: never auto close.
                 1: always auto close.
 
+*g:wintabs_switchbuf*
+values: '', 'useopen', or 'usetab'
+default: ''
+                This controls the behavior when switching between buffers.
+                'useopen': jump to the first window in current vim tab that 
+                contains the specific buffer. Otherwise open it in current 
+                window.
+                'usetab': similar to 'useopen' but searches in all vim tabs.
+                '': always open in current window.
+
 *g:wintabs_ignored_filetypes*
 values: list of filetype strings
 default: ['gitcommit', 'vundle', 'qf', 'vimfiler']

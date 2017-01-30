@@ -52,9 +52,9 @@ function! s:get_bufline(window)
       let name = '[No Name]'
     endif
 
-    if getbufvar(buffer, '&readonly', '')
+    if getbufvar(buffer, '&readonly')
       let name = name.g:wintabs_ui_readonly
-    elseif getbufvar(buffer, '&modified', '')
+    elseif getbufvar(buffer, '&modified')
       let name = name.g:wintabs_ui_modified
     endif
 
