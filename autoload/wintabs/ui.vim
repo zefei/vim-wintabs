@@ -191,7 +191,7 @@ function! s:get_tab_name(n)
     else
       let title = split(buffer, "/")[-1]
     endif
-    if getbufvar(buffer, '&modified', '')
+    if getbufvar(buffer, '&modified')
       let title = title.g:wintabs_ui_modified
     endif
   endif
