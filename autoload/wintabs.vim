@@ -1,10 +1,16 @@
 " util functions to for v:version < 704
 function! wintabs#gettabwinvar(tabnr, winnr, varname, def)
   let vars = gettabwinvar(a:tabnr, a:winnr, '')
+  if empty(vars)
+    return a:def
+  endif
   return get(vars, a:varname, a:def)
 endfunction
 function! wintabs#getwinvar(winnr, varname, def)
   let vars = getwinvar(a:winnr, '')
+  if empty(vars)
+    return a:def
+  endif
   return get(vars, a:varname, a:def)
 endfunction
 
