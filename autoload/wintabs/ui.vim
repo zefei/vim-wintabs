@@ -185,11 +185,14 @@ function! s:get_tab_name(n)
   if empty(title)
     let buflist = tabpagebuflist(a:n)
     let winnr = tabpagewinnr(a:n)
-    let title = bufname(buflist[winnr - 1])
-    if empty(title)
+    let buffer = bufname(buflist[winnr - 1])
+    if empty(buffer)
       let title = '[No Name]'
     else
-      let title = split(title, "/")[-1]
+      let title = split(buffer, "/")[-1]
+    endif
+    if getbufvar(buffer, '&modified', '')
+      let title = title.g:wintabs_ui_modified
     endif
   endif
 
