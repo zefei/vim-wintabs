@@ -210,6 +210,9 @@ function! s:get_tab_name(n)
     else
       let title = split(title, "/")[-1]
     endif
+    if getbufvar(buflist[winnr - 1], '&modified')
+      let title = title.g:wintabs_ui_modified
+    endif
   endif
 
   if g:wintabs_ui_show_vimtab_name == 2
