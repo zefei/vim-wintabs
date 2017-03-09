@@ -170,7 +170,21 @@ function! s:truncate_line(window, bufline, width)
     else
       let left_arrow = 1
       let line_start += left_arrow_len
+      let width -= left_arrow_len
     endif
+  endif
+
+  " if active tab is longer than width, truncate inside active tab
+  if active_end - active_start > width
+    let line_start = active_start
+    " re-assess lefe arrow since this is an edge case
+    if left_arrow && line_start == 0
+      let left_arrow = 0
+      let width += left_arrow_len
+    endif
+    " truncate line and leave enough space for markers
+    let endline = '..'.g:wintabs_ui_active_right.'%##'
+    let line = strpart(line, 0, line_start + width - len(endline)).endline
   endif
 
   " save line_start

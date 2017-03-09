@@ -207,7 +207,7 @@ values: string
 default: ' ', '|', '|'
                 These characters are drawn before wintabs, between wintabs, 
                 and after wintabs. It's recommended that they have the same 
-                length.
+                length, and are ascii characters.
 
 *g:wintabs_ui_active_left*
 *g:wintabs_ui_active_right*
@@ -215,7 +215,8 @@ values: string
 default: ' '
                 These characters are drawn around the active wintab. 
                 '[]' and ')(' are some of the good ones. It's recommended that
-                they have the same length as separators.
+                they have the same length as separators, and are ascii 
+                characters.
 
 *g:wintabs_ui_show_vimtab_name*
 values: 0, 1 or 2
