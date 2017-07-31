@@ -88,6 +88,8 @@ function! wintabs#close()
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
   endif
+
+  call s:purge(buffer)
 endfunction
 
 " close all but current tab
@@ -95,6 +97,7 @@ function! wintabs#only()
   call wintabs#refresh_buflist(0)
 
   let buflist = []
+  let deleted_buflist = []
   let modified = 0
 
   " keep modified tabs and current buffer
@@ -104,6 +107,8 @@ function! wintabs#only()
     elseif getbufvar(buffer, '&modified')
       call add(buflist, buffer)
       let modified = 1
+    else
+      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -113,6 +118,10 @@ function! wintabs#only()
 
   let w:wintabs_buflist = buflist
   call wintabs#init()
+
+  for buffer in deleted_buflist
+    call s:purge(buffer)
+  endfor
 endfunction
 
 " open all wintabs inside current vim tab in current window
@@ -345,7 +354,7 @@ function! wintabs#switching_buffer()
   endif
 
   " it's a new buffer if it isn't in current buflist
-  if !s:is_in_buflist(0, 0)
+  if !s:is_in_buflist(0, 0, buffer)
     " search range
     if g:wintabs_switchbuf =~ 'usetab'
       let tabrange = [tabpagenr()] + range(1, tabpagenr('$'))
@@ -362,7 +371,7 @@ function! wintabs#switching_buffer()
           continue
         endif
 
-        if s:is_in_buflist(tabpage, window)
+        if s:is_in_buflist(tabpage, window, buffer)
           let to_close = exists('w:wintabs_buflist') ? 0 : winnr()
           let same_tab = tabpage == tabpagenr()
           if to_close && !same_tab
@@ -490,6 +499,7 @@ function! s:close_tabs_window()
   call wintabs#refresh_buflist(0)
 
   let buflist = []
+  let deleted_buflist = []
   let modified = 0
 
   " keep modified tabs
@@ -497,6 +507,8 @@ function! s:close_tabs_window()
     if getbufvar(buffer, '&modified')
       call add(buflist, buffer)
       let modified = 1
+    else
+      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -511,12 +523,31 @@ function! s:close_tabs_window()
   else
     call s:close_window()
   endif
+
+  for buffer in deleted_buflist
+    call s:purge(buffer)
+  endfor
 endfunction
 
 " test if current buffer is in given tab and window
-function! s:is_in_buflist(tabnr, winnr)
+function! s:is_in_buflist(tabnr, winnr, buffer)
   let tabpage = a:tabnr == 0 ? tabpagenr() : a:tabnr
   let window = a:winnr == 0 ? winnr() : a:winnr
   let buflist = wintabs#gettabwinvar(tabpage, window, 'wintabs_buflist', [])
-  return index(buflist, bufnr('%')) != -1
+  return index(buflist, a:buffer) != -1
+endfunction
+
+" delete buffer from buflist if it isn't attached to any wintab
+function! s:purge(buffer)
+  for tabpage in range(1, tabpagenr('$'))
+    if index(tabpagebuflist(tabpage), a:buffer) != -1
+      return
+    endif
+    for window in range(1, tabpagewinnr(tabpage, '$'))
+      if s:is_in_buflist(tabpage, window, a:buffer)
+        return
+      endif
+    endfor
+  endfor
+  execute 'bdelete '.a:buffer
 endfunction
