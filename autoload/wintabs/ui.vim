@@ -1,8 +1,14 @@
-" generate tabline, very straight forward
+"" generate tabline, very straight forward
 function! wintabs#ui#get_tabline()
-  let [spaceline, spaceline_len] = s:get_spaceline()
-  let bufline = s:get_bufline(0)
-  let line = s:truncate_line(0, bufline, &columns - spaceline_len)
+  if g:wintabs_use_powerline
+    let [spaceline, spaceline_len] = s:get_spaceline_powerline()
+    let bufline = s:get_bufline_powerline(0)
+      let line = bufline[0]
+  else
+    let [spaceline, spaceline_len] = s:get_spaceline()
+    let bufline = s:get_bufline(0)
+    let line = s:truncate_line(0, bufline, &columns - spaceline_len)
+  endif
   return line.'%='.spaceline
 endfunction
 
@@ -71,12 +77,12 @@ function! s:get_bufline(window)
 
       " add active tab markers and highlight group
       let name = g:wintabs_ui_active_left.name.g:wintabs_ui_active_right
-      let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
+      let name = '%#'.g:wintabs_ui_active_buffer_higroup.'#'.name.'%##'
 
       " save position of current buffer
       let active_start = len(line)
       let active_end = len(line.name)
-      let active_higroup_len = len('%##%##'.g:wintabs_ui_active_higroup)
+      let active_higroup_len = len('%##%##'.g:wintabs_ui_active_buffer_higroup)
     else
       let name = name.g:wintabs_ui_sep_inbetween
     endif
@@ -90,6 +96,93 @@ function! s:get_bufline(window)
   elseif line[-3:] != '%##'
     " change last 'inbetween' separator to 'rightmost'
     let line = line[:-(seplen+1)].g:wintabs_ui_sep_rightmost
+  endif
+
+  return [line, active_start, active_end, active_higroup_len]
+endfunction
+
+" generate bufline per window with powerline fonts
+function! s:get_bufline_powerline(window)
+  call wintabs#refresh_buflist(a:window)
+
+  let line = ''
+  let seplen = len(g:wintabs_ui_powerline_sep_inbetween_buffer.'%##')
+  let active_start = 0
+  let active_end = 0
+  let active_higroup_len = 0
+
+  let l:bufferlist = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
+  for i in range(0, len(l:bufferlist)-1)
+    " get buffer name and normalize
+    let buffer = l:bufferlist[i]
+    let name = fnamemodify(bufname(buffer), ':t')
+    let name = substitute(name, '%', '%%', 'g')
+    if name == ''
+      let name = '[No Name]'
+    endif
+
+    let changed = 0
+    if getbufvar(buffer, '&readonly')
+      let name = name.g:wintabs_ui_readonly
+    elseif getbufvar(buffer, '&modified')
+      let name = name.g:wintabs_ui_modified
+      let changed = 1
+    endif
+
+    let name = ' '.name.' '
+
+    " highlight current buffer
+    if buffer == winbufnr(a:window)
+      " remove last 'inbetween' separator or 'leftmost' separator
+      if line == g:wintabs_ui_sep_leftmost
+        let line = ''
+      else
+        let line = line[:-(seplen+1)]
+      endif
+
+      " add active tab markers and highlight group
+      let left_sep_higroup = 'WintabsPowerlineSepActiveBufferLeft'
+      let right_sep_higroup = 'WintabsPowerlineSepActiveBufferRight'
+      let active_buffer_higroup = g:wintabs_ui_active_buffer_higroup
+      if changed
+          let left_sep_higroup = 'WintabsPowerlineSepActiveBufferChangedLeft'
+          let right_sep_higroup = 'WintabsPowerlineSepActiveBufferChangedRight'
+          let active_buffer_higroup = g:wintabs_ui_active_buffer_changed_higroup
+      endif
+
+      "if active buffer is first buffer dont use the left seperator
+      if line == ''
+        let left_sep = ''
+      else
+        let left_sep = '%#'.left_sep_higroup.'#'.g:wintabs_ui_powerline_sep_active_buffer_left.'%##'
+      endif
+      "if active is the last buffer right seperator needs to use normal background
+      if i == len(l:bufferlist)-1
+        if changed == 0
+          let right_sep_higroup = 'WintabsPowerlineSepActiveBufferRightRightmost'
+        endif
+      endif
+      let right_sep = '%#'.right_sep_higroup.'#'.g:wintabs_ui_powerline_sep_active_buffer_right.'%##'
+      let name = left_sep.'%#'.active_buffer_higroup.'#'.name.'%##'.right_sep
+
+      " save position of current buffer
+      let active_start = len(line)
+      let active_end = len(line.name)
+      let active_higroup_len = len('%##%##%##%##%##%##'.g:wintabs_ui_active_buffer_higroup.left_sep_higroup.right_sep_higroup)
+    else
+      if i == len(l:bufferlist)-1
+        let name = '%#'.g:wintabs_ui_inactive_buffer_higroup.'#'.name.'%##'.'%#WintabsPowerlineBufferRightmost#'.g:wintabs_ui_powerline_sep_rightmost_buffer.'%##'
+      else
+        let name = '%#'.g:wintabs_ui_inactive_buffer_higroup.'#'.name.g:wintabs_ui_powerline_sep_inbetween_buffer.'%##'
+      endif
+    endif
+
+    let line = line.name
+  endfor
+
+  if line == g:wintabs_ui_sep_leftmost
+    " remove separators if buflist is empty
+    let line = ''
   endif
 
   return [line, active_start, active_end, active_higroup_len]
@@ -235,10 +328,66 @@ function! s:get_spaceline()
     if tab == tabpagenr()
       let name = g:wintabs_ui_active_vimtab_left.name.g:wintabs_ui_active_vimtab_right
       let length += len(name)
-      let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
+      let name = '%#'.g:wintabs_ui_active_buffer_higroup.'#'.name.'%##'
     else
       let name = ' '.name.' '
       let length += len(name)
+    endif
+
+    " make name clickable
+    let name = '%'.tab.'T'.name.'%T'
+
+    let line = line.name
+  endfor
+
+  return [line, length]
+endfunction
+
+" generate space (vim tabs) line (with powerline_font)
+function! s:get_spaceline_powerline()
+  " return empty line if there is only one space (vim tab)
+  let spaces = tabpagenr('$')
+  if spaces == 1
+    return ['', 0]
+  endif
+
+  let line = ''
+  let length = 0
+  let active_tab_left = 0
+  for tab in range(1, spaces)
+    " get tab name
+    let name = s:get_tab_name(tab)
+
+    " highlight current space
+    if tab == tabpagenr()
+      let active_tab_left = 1
+      if tab == spaces
+        let right_sep = ''
+      else
+        let right_sep = '%#WintabsPowerlineSepActiveTabRight#'.g:wintabs_ui_powerline_sep_active_tab_right.'%##'
+      endif
+      "if active is the last buffer right seperator needs to use normal background
+      if tab == 1
+        let left_sep = '%#WintabsPowerlineSepActiveTabLeftLeftmost#'.g:wintabs_ui_powerline_sep_active_tab_left.'%##'
+      else
+        let left_sep = '%#WintabsPowerlineSepActiveTabLeft#'.g:wintabs_ui_powerline_sep_active_tab_left.'%##'
+      endif
+      let length += len(g:wintabs_ui_powerline_sep_active_tab_left.name.g:wintabs_ui_powerline_sep_active_tab_right)
+      let name = '%#'.g:wintabs_ui_active_tab_higroup.'# '.name.' %##'
+      let name = left_sep.name.right_sep
+    else
+      if length == 0 || active_tab_left == 1
+        if active_tab_left == 1
+          let active_tab_left = 0
+          let name = '%#'.g:wintabs_ui_inactive_tab_higroup.'# '.name.' %##'
+        else
+          let name = '%#WintabsPowerlineTabLeftmost#'.g:wintabs_ui_powerline_sep_leftmost_tab.'%##%#'.g:wintabs_ui_inactive_tab_higroup.'# '.name.' %##'
+        endif
+        let length += len(name)
+      else
+        let name = '%#'.g:wintabs_ui_inactive_tab_higroup.'#'.g:wintabs_ui_powerline_sep_inbetween_tab.' '.name.' '.'%##'
+        let length += len(name)
+      endif
     endif
 
     " make name clickable

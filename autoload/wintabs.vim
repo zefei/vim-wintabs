@@ -312,6 +312,31 @@ function! wintabs#init()
     augroup END
   endif
 
+  " if using powerline_fonts create highlight groups:
+  if g:wintabs_use_powerline
+    " get color information for seperators
+    let l:wintabs_color_active_buffer_bg = synIDattr(synIDtrans(hlID(g:wintabs_ui_active_buffer_higroup)), 'bg', "gui")
+    let l:wintabs_color_active_buffer_changed_bg = synIDattr(synIDtrans(hlID(g:wintabs_ui_active_buffer_changed_higroup)), 'bg', "gui")
+    let l:wintabs_color_inactive_buffer_bg = synIDattr(synIDtrans(hlID(g:wintabs_ui_inactive_buffer_higroup)), 'bg', "gui")
+    let l:wintabs_color_active_tab_bg = synIDattr(synIDtrans(hlID(g:wintabs_ui_active_tab_higroup)), 'bg', "gui")
+    let l:wintabs_color_inactive_tab_bg = synIDattr(synIDtrans(hlID(g:wintabs_ui_inactive_tab_higroup)), 'bg', "gui")
+    let l:wintabs_color_normal_bg = synIDattr(synIDtrans(hlID('Normal')), 'bg', "gui")
+    " create highlight groups
+    " Buffers
+    execute 'hi! WintabsPowerlineSepActiveBufferLeft cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_active_buffer_bg.' guifg='.l:wintabs_color_inactive_buffer_bg
+    execute 'hi! WintabsPowerlineSepActiveBufferRight cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_inactive_buffer_bg.' guifg='.l:wintabs_color_active_buffer_bg
+    execute 'hi! WintabsPowerlineSepActiveBufferChangedLeft cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_active_buffer_changed_bg.' guifg='.l:wintabs_color_inactive_buffer_bg
+    execute 'hi! WintabsPowerlineSepActiveBufferChangedRight cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_inactive_buffer_bg.' guifg='.l:wintabs_color_active_buffer_changed_bg
+    execute 'hi! WintabsPowerlineBufferRightmost cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_normal_bg.' guifg='.l:wintabs_color_inactive_buffer_bg
+    execute 'hi! WintabsPowerlineSepActiveBufferRightRightmost cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_normal_bg.' guifg='.l:wintabs_color_active_buffer_bg
+    execute 'hi! WintabsPowerlineSepActiveBufferChangedRightRightmost cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_normal_bg.' guifg='.l:wintabs_color_active_buffer_changed_bg
+    " Tabs
+    execute 'hi! WintabsPowerlineSepActiveTabLeft cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_inactive_tab_bg.' guifg='.l:wintabs_color_active_tab_bg
+    execute 'hi! WintabsPowerlineSepActiveTabRight cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_active_tab_bg.' guifg='.l:wintabs_color_inactive_tab_bg
+    execute 'hi! WintabsPowerlineTabLeftmost cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_normal_bg.' guifg='.l:wintabs_color_inactive_tab_bg
+    execute 'hi! WintabsPowerlineSepActiveTabLeftLeftmost cterm=NONE ctermbg=1 ctermfg=8 guibg='.l:wintabs_color_normal_bg.' guifg='.l:wintabs_color_active_tab_bg
+  endif
+
   " hijack buffer switching
   augroup wintabs_switching_buffer
     autocmd!
