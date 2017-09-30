@@ -145,6 +145,24 @@ function! wintabs#all()
   call wintabs#init()
 endfunction
 
+" open all vim buffers in current window
+function! wintabs#all_buffers()
+  call wintabs#refresh_buflist(0)
+
+  let buflist = wintabs#getwinvar(winnr(), 'wintabs_buflist', [])
+  for buffer in range(1, bufnr('$'))
+    if index(buflist, buffer) == -1 && s:buflisted(buffer)
+      if (g:wintabs_reverse_order)
+        call insert(buflist, buffer)
+      else
+        call add(buflist, buffer)
+      endif
+    endif
+  endfor
+
+  call wintabs#init()
+endfunction
+
 " close current window
 function! wintabs#close_window()
   let w:wintabs_closing = 1

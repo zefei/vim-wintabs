@@ -80,6 +80,9 @@ These are wintab commands and their normal mode key mappings.
                 Open all wintabs that belong to the current Vim tab in the 
                 current window.
 
+*:WintabsAllBuffers*
+                Open all Vim buffers in the current window.
+
 *:WintabsCloseWindow*
 *<Plug>(wintabs_close_window)*
                 Close the current window, very much like CTRL-W c. But it 
