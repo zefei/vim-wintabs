@@ -58,8 +58,8 @@ function! s:get_bufline(window)
       let name = name.g:wintabs_ui_modified
     endif
 
-    let name = substitute(g:wintabs_ui_name_format, "%n", name, "g")
-    let name = substitute(name, "%d", buffer, "g")
+    let name = substitute(g:wintabs_ui_buffer_name_format, "%t", name, "g")
+    let name = substitute(name, "%n", buffer, "g")
     let name = ' '.name.' '
 
     " highlight current buffer
@@ -206,8 +206,8 @@ function! s:get_tab_name(n)
     endif
   endif
 
-  let title = substitute(g:wintabs_ui_vimtab_name_format, "%n", title, "g")
-  let title = substitute(title, "%d", a:n, "g")
+  let title = substitute(g:wintabs_ui_vimtab_name_format, "%t", title, "g")
+  let title = substitute(title, "%n", a:n, "g")
 
   return title
 endfunction
