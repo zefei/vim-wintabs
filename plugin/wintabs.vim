@@ -83,13 +83,30 @@ else
 endif
 call s:set('g:wintabs_ui_active_vimtab_left', ' ')
 call s:set('g:wintabs_ui_active_vimtab_right', ' ')
+call s:set('g:wintabs_use_powerline', '0')
+call s:set('g:wintabs_ui_powerline_sep_active_buffer_left', "\ue0b0")
+call s:set('g:wintabs_ui_powerline_sep_active_buffer_right', "\ue0b0")
+call s:set('g:wintabs_ui_powerline_sep_inbetween_buffer', "\ue0b1")
+call s:set('g:wintabs_ui_powerline_sep_rightmost_buffer', "\ue0b0")
+call s:set('g:wintabs_ui_powerline_sep_active_tab_left', "\ue0b2")
+call s:set('g:wintabs_ui_powerline_sep_active_tab_right', "\ue0b2")
+call s:set('g:wintabs_ui_powerline_sep_inbetween_tab', "\ue0b3")
+call s:set('g:wintabs_ui_powerline_sep_leftmost_tab', "\ue0b2")
 
 if g:wintabs_display == 'tabline'
-  call s:set('g:wintabs_ui_active_higroup', 'TabLineSel')
+  call s:set('g:wintabs_ui_active_buffer_higroup', 'TabLineSel')
+  call s:set('g:wintabs_ui_active_buffer_changed_higroup', g:wintabs_ui_active_buffer_higroup)
+  call s:set('g:wintabs_ui_inactive_buffer_higroup', 'Normal')
+  call s:set('g:wintabs_ui_active_tab_higroup', 'TabLineSel')
+  call s:set('g:wintabs_ui_inactive_tab_higroup', 'Normal')
 endif
 
 if g:wintabs_display == 'statusline'
-  call s:set('g:wintabs_ui_active_higroup', 'Normal')
+  call s:set('g:wintabs_ui_active_buffer_higroup', 'Normal')
+  call s:set('g:wintabs_ui_active_buffer_changed_higroup', g:wintabs_ui_active_buffer_higroup)
+  call s:set('g:wintabs_ui_inactive_buffer_higroup', 'Normal')
+  call s:set('g:wintabs_ui_active_tab_higroup', 'Normal')
+  call s:set('g:wintabs_ui_inactive_tab_higroup', 'Normal')
 endif
 
 " private
