@@ -218,14 +218,6 @@ default: ' '
                 they have the same length as separators, and are ascii 
                 characters.
 
-*g:wintabs_ui_show_vimtab_name*
-values: 0, 1 or 2
-default: 0
-                This controls how Vim tabs will be displayed.
-                0: show a number of the tab.
-                1: show a name of the tab.
-                2: show number and name of the tab (<number>:<tab_name>).
-
 *g:wintabs_ui_buffer_name_format*
 values: string
 default: '%t'
