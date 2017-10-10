@@ -58,6 +58,8 @@ function! s:get_bufline(window)
       let name = name.g:wintabs_ui_modified
     endif
 
+    let name = substitute(g:wintabs_ui_buffer_name_format, "%t", name, "g")
+    let name = substitute(name, "%n", buffer, "g")
     let name = ' '.name.' '
 
     " highlight current buffer
@@ -180,12 +182,6 @@ function! s:truncate_line(window, bufline, width)
 endfunction
 
 function! s:get_tab_name(n)
-  " show number of tabs
-  if g:wintabs_ui_show_vimtab_name == 0
-    return a:n
-  endif
-
-  " getting tab name
   let title = ''
   let s:taboo = get(g:, 'loaded_taboo', 0)
   if s:taboo
@@ -210,9 +206,8 @@ function! s:get_tab_name(n)
     endif
   endif
 
-  if g:wintabs_ui_show_vimtab_name == 2
-    let title = a:n.':'.title
-  endif
+  let title = substitute(g:wintabs_ui_vimtab_name_format, "%t", title, "g")
+  let title = substitute(title, "%n", a:n, "g")
 
   return title
 endfunction
