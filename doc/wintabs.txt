@@ -218,13 +218,23 @@ default: ' '
                 they have the same length as separators, and are ascii 
                 characters.
 
-*g:wintabs_ui_show_vimtab_name*
-values: 0, 1 or 2
-default: 0
-                This controls how Vim tabs will be displayed.
-                0: show a number of the tab.
-                1: show a name of the tab.
-                2: show number and name of the tab (<number>:<tab_name>).
+*g:wintabs_ui_name_format*
+values: string
+default: '%n'
+                You can specify format of wintab representation.
+                By default it is only name of buffer. But you can use the
+                following arguments:
+                '%n': name of buffer
+                '%d': number of buffer
+
+*g:wintabs_ui_vimtab_name_format*
+values: string
+default: '%d'
+                You can specify format of Vim tab representation.
+                By default it is only number of Vim tab. But you can use the
+                following arguments:
+                '%n': name of buffer on this tab
+                '%d': number of Vim tab
 
 *g:wintabs_ui_active_vimtab_left*
 *g:wintabs_ui_active_vimtab_right*
