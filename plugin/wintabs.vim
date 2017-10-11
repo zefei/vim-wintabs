@@ -74,6 +74,14 @@ call s:set('g:wintabs_ui_active_left', ' ')
 call s:set('g:wintabs_ui_active_right', ' ')
 call s:set('g:wintabs_ui_tab_number', 2)
 call s:set('g:wintabs_ui_show_vimtab_name', 0)
+call s:set('g:wintabs_ui_buffer_name_format', '%t')
+if g:wintabs_ui_show_vimtab_name == 0
+  call s:set('g:wintabs_ui_vimtab_name_format', '%n')
+elseif g:wintabs_ui_show_vimtab_name == 1
+  call s:set('g:wintabs_ui_vimtab_name_format', '%t')
+else
+  call s:set('g:wintabs_ui_vimtab_name_format', '%n:%t')
+endif
 call s:set('g:wintabs_ui_active_vimtab_left', ' ')
 call s:set('g:wintabs_ui_active_vimtab_right', ' ')
 
