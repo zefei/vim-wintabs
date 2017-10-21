@@ -63,6 +63,14 @@ call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_switchbuf', '')
 call s:set('g:wintabs_reverse_order', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])
+call s:set('g:wintabs_renderers', {
+      \'buffer': function('wintabs#renderers#buffer'),
+      \'buffer_sep': function('wintabs#renderers#buffer_sep'),
+      \'tab': function('wintabs#renderers#tab'),
+      \'tab_sep': function('wintabs#renderers#tab_sep'),
+      \'left_arrow': function('wintabs#renderers#left_arrow'),
+      \'right_arrow': function('wintabs#renderers#right_arrow'),
+      \})
 
 " ui
 call s:set('g:wintabs_ui_modified', ' +')
@@ -72,8 +80,8 @@ call s:set('g:wintabs_ui_sep_inbetween', '|')
 call s:set('g:wintabs_ui_sep_rightmost', '|')
 call s:set('g:wintabs_ui_active_left', ' ')
 call s:set('g:wintabs_ui_active_right', ' ')
+call s:set('g:wintabs_ui_buffer_name_format', ' %t ')
 call s:set('g:wintabs_ui_show_vimtab_name', 0)
-call s:set('g:wintabs_ui_buffer_name_format', '%t')
 if g:wintabs_ui_show_vimtab_name == 0
   call s:set('g:wintabs_ui_vimtab_name_format', '%n')
 elseif g:wintabs_ui_show_vimtab_name == 1

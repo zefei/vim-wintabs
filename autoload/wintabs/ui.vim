@@ -38,61 +38,63 @@ endfunction
 function! s:get_bufline(window)
   call wintabs#refresh_buflist(a:window)
 
-  let line = g:wintabs_ui_sep_leftmost
-  let seplen = len(g:wintabs_ui_sep_inbetween)
   let active_start = 0
   let active_end = 0
   let active_higroup_len = 0
 
-  for buffer in wintabs#getwinvar(a:window, 'wintabs_buflist', [])
-    " get buffer name and normalize
-    let name = fnamemodify(bufname(buffer), ':t')
-    let name = substitute(name, '%', '%%', 'g')
-    if name == ''
-      let name = '[No Name]'
-    endif
+  let line = ''
+  let i = 0
+  let buffers = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
+  let active_index = index(buffers, winbufnr(a:window))
 
-    if getbufvar(buffer, '&readonly')
-      let name = name.g:wintabs_ui_readonly
-    elseif getbufvar(buffer, '&modified')
-      let name = name.g:wintabs_ui_modified
-    endif
+  for buffer in buffers
+    let is_active = i == active_index
+    let is_next_active = i == active_index - 1
 
-    let name = substitute(g:wintabs_ui_buffer_name_format, "%t", name, "g")
-    let name = substitute(name, "%n", buffer, "g")
-    let name = ' '.name.' '
-
-    " highlight current buffer
-    if buffer == winbufnr(a:window)
-      " remove last 'inbetween' separator or 'leftmost' separator
-      if line == g:wintabs_ui_sep_leftmost
-        let line = ''
-      else
-        let line = line[:-(seplen+1)]
+    if i == 0
+      if is_active
+        let active_start = len(line)
+        let line = line.'%#'.g:wintabs_ui_active_higroup.'#'
       endif
 
-      " add active tab markers and highlight group
-      let name = g:wintabs_ui_active_left.name.g:wintabs_ui_active_right
-      let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
-
-      " save position of current buffer
-      let active_start = len(line)
-      let active_end = len(line.name)
-      let active_higroup_len = len('%##%##'.g:wintabs_ui_active_higroup)
-    else
-      let name = name.g:wintabs_ui_sep_inbetween
+      let line = line.g:wintabs_renderers.buffer_sep({
+            \'is_leftmost': 1,
+            \'is_rightmost': 0,
+            \'is_left': active_index >= 0,
+            \'is_right': 0,
+            \'is_active': is_active,
+            \})
     endif
 
-    let line = line.name
-  endfor
+    let line = line.g:wintabs_renderers.buffer(buffer, {
+          \'is_leftmost': 0,
+          \'is_rightmost': i == len(buffers) - 1,
+          \'is_left': active_index >= 0 && i < active_index,
+          \'is_right': active_index >= 0 && i > active_index,
+          \'is_active': is_active,
+          \})
 
-  if line == g:wintabs_ui_sep_leftmost
-    " remove separators if buflist is empty
-    let line = ''
-  elseif line[-3:] != '%##'
-    " change last 'inbetween' separator to 'rightmost'
-    let line = line[:-(seplen+1)].g:wintabs_ui_sep_rightmost
-  endif
+    if is_next_active
+      let active_start = len(line)
+      let line = line.'%#'.g:wintabs_ui_active_higroup.'#'
+    endif
+
+    let line = line.g:wintabs_renderers.buffer_sep({
+          \'is_leftmost': 0,
+          \'is_rightmost': i == len(buffers) - 1,
+          \'is_left': active_index >= 0 && i < active_index,
+          \'is_right': active_index >= 0 && i >= active_index,
+          \'is_active': is_active || is_next_active,
+          \})
+
+    if is_active
+      let line = line.'%##'
+      let active_end = len(line)
+      let active_higroup_len = len('%##%##'.g:wintabs_ui_active_higroup)
+    endif
+
+    let i = i + 1
+  endfor
 
   return [line, active_start, active_end, active_higroup_len]
 endfunction
@@ -111,8 +113,10 @@ function! s:truncate_line(window, bufline, width)
   " arrows are added to indicate truncation
   let left_arrow = 0
   let right_arrow = 0
-  let left_arrow_len = len(g:wintabs_ui_arrow_left)
-  let right_arrow_len = len(g:wintabs_ui_arrow_right)
+  let left_arrow_label = g:wintabs_renderers.left_arrow()
+  let right_arrow_label = g:wintabs_renderers.right_arrow()
+  let left_arrow_len = len(left_arrow_label)
+  let right_arrow_len = len(right_arrow_label)
 
   " adjust line_start and width to accommodate actie buffer and arrows
   " 3 passes are needed to satisfy enough constraints
@@ -174,42 +178,11 @@ function! s:truncate_line(window, bufline, width)
   call setwinvar(a:window, 'wintabs_bufline_start', line_start)
 
   " final assembly
-  let left = left_arrow ? g:wintabs_ui_arrow_left : ''
-  let right = right_arrow ? g:wintabs_ui_arrow_right : ''
+  let left = left_arrow ? left_arrow_label : ''
+  let right = right_arrow ? right_arrow_label : ''
   let line = left.strpart(line, line_start, width).right
 
   return line
-endfunction
-
-function! s:get_tab_name(n)
-  let title = ''
-  let s:taboo = get(g:, 'loaded_taboo', 0)
-  if s:taboo
-    let title = TabooTabTitle(a:n)
-  endif
-
-  if empty(title) && exists('*gettabvar')
-    let title = gettabvar(a:n, 'title')
-  endif
-
-  if empty(title)
-    let buflist = tabpagebuflist(a:n)
-    let winnr = tabpagewinnr(a:n)
-    let title = bufname(buflist[winnr - 1])
-    if empty(title)
-      let title = '[No Name]'
-    else
-      let title = split(title, "/")[-1]
-    endif
-    if getbufvar(buflist[winnr - 1], '&modified')
-      let title = title.g:wintabs_ui_modified
-    endif
-  endif
-
-  let title = substitute(g:wintabs_ui_vimtab_name_format, "%t", title, "g")
-  let title = substitute(title, "%n", a:n, "g")
-
-  return title
 endfunction
 
 " generate space (vim tabs) line
@@ -220,26 +193,57 @@ function! s:get_spaceline()
     return ['', 0]
   endif
 
-  let line = g:wintabs_ui_sep_spaceline
-  let length = 1
-  for tab in range(1, spaces)
-    " get tab name
-    let name = s:get_tab_name(tab)
+  let line = ''
+  let active_index = tabpagenr()
+  let length = 0
 
-    " highlight current space
-    if tab == tabpagenr()
-      let name = g:wintabs_ui_active_vimtab_left.name.g:wintabs_ui_active_vimtab_right
-      let length += len(name)
-      let name = '%#'.g:wintabs_ui_active_higroup.'#'.name.'%##'
-    else
-      let name = ' '.name.' '
-      let length += len(name)
+  for tab in range(1, spaces)
+    let is_active = tab == active_index
+    let is_next_active = tab == active_index - 1
+
+    if tab == 1
+      if is_active
+        let line = line.'%#'.g:wintabs_ui_active_higroup.'#'
+      endif
+
+      let sep = g:wintabs_renderers.tab_sep({
+            \'is_leftmost': 1,
+            \'is_rightmost': 0,
+            \'is_left': active_index >= 0,
+            \'is_right': 0,
+            \'is_active': is_active,
+            \})
+      let line = line.sep
+      let length = length + len(sep)
     endif
 
-    " make name clickable
-    let name = '%'.tab.'T'.name.'%T'
+    let name = g:wintabs_renderers.tab(tab, {
+          \'is_leftmost': 0,
+          \'is_rightmost': tab == spaces,
+          \'is_left': active_index >= 0 && tab < active_index,
+          \'is_right': active_index >= 0 && tab > active_index,
+          \'is_active': is_active,
+          \})
+    let line = line.'%'.tab.'T'.name.'%T'
+    let length = length + len(name)
 
-    let line = line.name
+    if is_next_active
+      let line = line.'%#'.g:wintabs_ui_active_higroup.'#'
+    endif
+
+    let sep = g:wintabs_renderers.tab_sep({
+          \'is_leftmost': 0,
+          \'is_rightmost': tab == spaces,
+          \'is_left': active_index >= 0 && tab < active_index,
+          \'is_right': active_index >= 0 && tab >= active_index,
+          \'is_active': is_active || is_next_active,
+          \})
+    let line = line.sep
+    let length = length + len(sep)
+
+    if is_active
+      let line = line.'%##'
+    endif
   endfor
 
   return [line, length]
