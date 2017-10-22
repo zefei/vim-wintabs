@@ -193,6 +193,15 @@ default: 0
                 This controls whether new buffers will be added to the
                 beginning of the wintabs list rather than the end.
 
+*g:wintabs_renderers*
+values: dictionary of renderer functions
+default: wintabs#renderers#defaults()
+                This dictionary contains all wintabs renderer functions. These 
+                functions can be overriden to customize all wintabs UI.
+                To see how renderer function works, take a look at the default 
+                buffer renderer implementation inside 
+                `autoload/wintabs/renderers.vim`.
+
 *g:wintabs_ui_modified*
 values: string
 default: ' +'

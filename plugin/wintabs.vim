@@ -63,14 +63,7 @@ call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_switchbuf', '')
 call s:set('g:wintabs_reverse_order', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])
-call s:set('g:wintabs_renderers', {
-      \'buffer': function('wintabs#renderers#buffer'),
-      \'buffer_sep': function('wintabs#renderers#buffer_sep'),
-      \'tab': function('wintabs#renderers#tab'),
-      \'tab_sep': function('wintabs#renderers#tab_sep'),
-      \'left_arrow': function('wintabs#renderers#left_arrow'),
-      \'right_arrow': function('wintabs#renderers#right_arrow'),
-      \})
+call s:set('g:wintabs_renderers', wintabs#renderers#defaults())
 
 " ui
 call s:set('g:wintabs_ui_modified', ' +')
