@@ -30,8 +30,15 @@ function! wintabs#element#render(var)
     if !empty(a:var.highlight)
       let text = '%#'.a:var.highlight.'#'.text.'%##'
     endif
-    if (a:var.type == 'tab')
-      let text = '%'.a:var.number.'T'.text.'%T'
+    if a:var.type == 'buffer' && has('tablineat')
+      let text = '%'.a:var.number.'@wintabs#element#buffer_click@'.text.'%X'
+    endif
+    if a:var.type == 'tab'
+      if has('tablineat')
+        let text = '%'.a:var.number.'@wintabs#element#tab_click@'.text.'%X'
+      else
+        let text = '%'.a:var.number.'T'.text.'%T'
+      endif
     endif
     return text
   endif
@@ -102,4 +109,23 @@ function! wintabs#element#slice(var, start, width)
   endif
 
   return []
+endfunction
+
+" neovim click handler for buffers
+function! wintabs#element#buffer_click(bufnr, click_count, button, modifiers)
+  if a:button == 'l'
+    execute 'silent! confirm buffer '.a:bufnr
+  elseif a:button == 'm'
+    execute 'silent! confirm buffer '.a:bufnr
+    call wintabs#close()
+  endif
+endfunction
+
+" neovim click handler for vimtabs
+function! wintabs#element#tab_click(tabnr, click_count, button, modifiers)
+  if a:button == 'l'
+    execute 'tabnext '.a:tabnr
+  elseif a:button == 'm'
+    execute 'tabclose '.a:tabnr
+  endif
 endfunction
