@@ -30,13 +30,18 @@ function! wintabs#element#render(var)
     if !empty(a:var.highlight)
       let text = '%#'.a:var.highlight.'#'.text.'%##'
     endif
-    if a:var.type == 'buffer' && has('tablineat')
-      let text = '%'.a:var.number.'@wintabs#element#buffer_click@'.text.'%X'
-    endif
-    if a:var.type == 'tab'
-      if has('tablineat')
+    if has('tablineat')
+      if a:var.type == 'buffer'
+        let text = '%'.a:var.number.'@wintabs#element#buffer_click@'.text.'%X'
+      elseif a:var.type == 'tab'
         let text = '%'.a:var.number.'@wintabs#element#tab_click@'.text.'%X'
-      else
+      elseif a:var.type == 'left_arrow'
+        let text = '%@wintabs#element#left_arrow_click@'.text.'%X'
+      elseif a:var.type == 'right_arrow'
+        let text = '%@wintabs#element#right_arrow_click@'.text.'%X'
+      endif
+    else
+      if a:var.type == 'tab'
         let text = '%'.a:var.number.'T'.text.'%T'
       endif
     endif
@@ -127,5 +132,19 @@ function! wintabs#element#tab_click(tabnr, click_count, button, modifiers)
     execute 'tabnext '.a:tabnr
   elseif a:button == 'm'
     execute 'tabclose '.a:tabnr
+  endif
+endfunction
+
+" neovim click handler for left arrow
+function! wintabs#element#left_arrow_click(_, click_count, button, modifiers)
+  if a:button == 'l'
+    call wintabs#jump(-1, 0)
+  endif
+endfunction
+
+" neovim click handler for right arrow
+function! wintabs#element#right_arrow_click(_, click_count, button, modifiers)
+  if a:button == 'l'
+    call wintabs#jump(1, 0)
   endif
 endfunction
