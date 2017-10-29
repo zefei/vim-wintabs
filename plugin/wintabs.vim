@@ -68,7 +68,7 @@ call s:set('g:wintabs_renderers', wintabs#renderers#defaults())
 " ui
 call s:set('g:wintabs_ui_modified', ' +')
 call s:set('g:wintabs_ui_readonly', ' -')
-call s:set('g:wintabs_ui_sep_leftmost', ' ')
+call s:set('g:wintabs_ui_sep_leftmost', '')
 call s:set('g:wintabs_ui_sep_inbetween', '|')
 call s:set('g:wintabs_ui_sep_rightmost', '|')
 call s:set('g:wintabs_ui_active_left', ' ')

@@ -216,7 +216,7 @@ default: ' -'
 *g:wintabs_ui_sep_inbetween*
 *g:wintabs_ui_sep_rightmost*
 values: string
-default: ' ', '|', '|'
+default: '', '|', '|'
                 These characters are drawn before wintabs, between wintabs, 
                 and after wintabs. It's recommended that they have the same 
                 length, and are ascii characters.
