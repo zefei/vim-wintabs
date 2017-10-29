@@ -11,11 +11,8 @@ function! wintabs#renderers#defaults()
 endfunction
 
 function! wintabs#renderers#buffer(bufnr, config)
-  let label = wintabs#renderers#bufname(a:bufnr)
-  let label = substitute(g:wintabs_ui_buffer_name_format, "%t", label, "g")
-  let label = substitute(label, "%n", a:bufnr, "g")
   return {
-        \'label': label,
+        \'label': wintabs#renderers#buf_label(a:bufnr),
         \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
@@ -41,24 +38,7 @@ function! wintabs#renderers#buffer_sep(config)
 endfunction
 
 function! wintabs#renderers#tab(tabnr, config)
-  let label = ''
-  if get(g:, 'loaded_taboo', 0)
-    let label = TabooTabTitle(a:tabnr)
-  endif
-
-  if empty(label) && exists('*gettabvar')
-    let label = gettabvar(a:tabnr, 'label')
-  endif
-
-  if empty(label)
-    let buflist = tabpagebuflist(a:tabnr)
-    let winnr = tabpagewinnr(a:tabnr)
-    let bufnr = buflist[winnr - 1]
-    let label = wintabs#renderers#bufname(bufnr)
-  endif
-
-  let label = substitute(g:wintabs_ui_vimtab_name_format, "%t", label, "g")
-  let label = substitute(label, "%n", a:tabnr, "g")
+  let label = wintabs#renderers#tab_label(a:tabnr)
   if (!a:config.is_active)
     let label = ' '.label.' '
   endif
@@ -118,4 +98,33 @@ function! wintabs#renderers#bufname(bufnr)
     let name = name.g:wintabs_ui_modified
   endif
   return name
+endfunction
+
+function! wintabs#renderers#buf_label(bufnr)
+  let label = wintabs#renderers#bufname(a:bufnr)
+  let label = substitute(g:wintabs_ui_buffer_name_format, "%t", label, "g")
+  let label = substitute(label, "%n", a:bufnr, "g")
+  return label
+endfunction
+
+function! wintabs#renderers#tab_label(tabnr)
+  let label = ''
+  if get(g:, 'loaded_taboo', 0)
+    let label = TabooTabTitle(a:tabnr)
+  endif
+
+  if empty(label) && exists('*gettabvar')
+    let label = gettabvar(a:tabnr, 'label')
+  endif
+
+  if empty(label)
+    let buflist = tabpagebuflist(a:tabnr)
+    let winnr = tabpagewinnr(a:tabnr)
+    let bufnr = buflist[winnr - 1]
+    let label = wintabs#renderers#bufname(bufnr)
+  endif
+
+  let label = substitute(g:wintabs_ui_vimtab_name_format, "%t", label, "g")
+  let label = substitute(label, "%n", a:tabnr, "g")
+  return label
 endfunction
