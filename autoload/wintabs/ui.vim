@@ -18,7 +18,7 @@ endfunction
 
 " generate statusline window by window
 function! wintabs#ui#get_statusline(window)
-  let bufline = s:truncate_line(a:window, s:get_bufline(0), winwidth(a:window))
+  let bufline = s:truncate_line(a:window, s:get_bufline(a:window), winwidth(a:window))
 
   " reseter is attached to detect stale status
   let reseter = '%{wintabs#ui#reset_statusline('.a:window.')}'
