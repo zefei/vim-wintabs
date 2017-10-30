@@ -50,7 +50,7 @@ function! wintabs#element#render(var)
 
   if type(a:var) == type([])
     let text = ''
-    for element in a:var
+    for element in s:merge_higroup(a:var)
       let text = text.wintabs#element#render(element)
     endfor
     return text
@@ -147,4 +147,33 @@ function! wintabs#element#right_arrow_click(_, click_count, button, modifiers)
   if a:button == 'l'
     call wintabs#jump(1, 0)
   endif
+endfunction
+
+" merge adjacent elements when they have the same highlight group
+" this is a specific optimization to avoid E541 (too many elements)
+function! s:merge_higroup(elements)
+  if len(a:elements) < 2
+    return a:elements
+  endif
+
+  let merged = [a:elements[0]]
+  for i in range(1, len(a:elements) - 1)
+    let prev = copy(merged[-1])
+    let curr = copy(a:elements[i])
+    if type(prev) == type({}) && type(curr) == type({}) &&
+          \synIDtrans(hlID(prev.highlight)) == synIDtrans(hlID(curr.highlight))
+      let highlight = prev.highlight
+      let prev.highlight = ''
+      let curr.highlight = ''
+      let merged[-1] = {
+            \'type': 'merged',
+            \'label': wintabs#element#render(prev).wintabs#element#render(curr),
+            \'highlight': highlight,
+            \}
+    else
+      call add(merged, curr)
+    endif
+  endfor
+
+  return merged
 endfunction
