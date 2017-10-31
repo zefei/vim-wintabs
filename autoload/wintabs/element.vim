@@ -30,7 +30,7 @@ function! wintabs#element#render(var)
     if !empty(a:var.highlight)
       let text = '%#'.a:var.highlight.'#'.text.'%##'
     endif
-    if has('tablineat')
+    if has('tablineat') && g:wintabs_display == 'tabline'
       if a:var.type == 'buffer'
         let text = '%'.a:var.number.'@wintabs#element#buffer_click@'.text.'%X'
       elseif a:var.type == 'tab'
