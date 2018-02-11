@@ -104,14 +104,8 @@ endfunction
 let s:num_to_text_array = ['¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹', '⁰' ]
 
 function! s:num_to_text(i)
-  if g:wintabs_ui_tab_number == 1
-     return a:i
-  elseif a:i >= 1 && a:i <= 10
-    if g:wintabs_ui_tab_number == 2
-      return s:num_to_text_array[a:i - 1]
-    else
-      return ''
-    endif
+  if a:i >= 1 && a:i <= 10
+    return s:num_to_text_array[a:i - 1]
   else
     return ''
   endif
