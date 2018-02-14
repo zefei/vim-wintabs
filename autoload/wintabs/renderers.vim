@@ -19,17 +19,17 @@ endfunction
 
 function! wintabs#renderers#buffer_sep(config)
   let label = g:wintabs_ui_sep_inbetween
-  if a:config.is_active && a:config.is_left
-    let label = g:wintabs_ui_active_left
-  endif
-  if a:config.is_active && a:config.is_right
-    let label = g:wintabs_ui_active_right
-  endif
   if a:config.is_leftmost
     let label = g:wintabs_ui_sep_leftmost
   endif
   if a:config.is_rightmost
     let label = g:wintabs_ui_sep_rightmost
+  endif
+  if a:config.is_active && a:config.is_left
+    let label = g:wintabs_ui_active_left
+  endif
+  if a:config.is_active && a:config.is_right
+    let label = g:wintabs_ui_active_right
   endif
   return {
         \'label': label,
