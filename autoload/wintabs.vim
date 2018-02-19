@@ -80,11 +80,12 @@ function! wintabs#close()
   if close_window
     call s:close_window()
   else
+    let occurrence = s:count_occurrence(buffer)
     call s:switch_tab(switch_to, 1)
 
-    " only remove buffer that is unmodifed
+    " only remove buffer that is unmodifed or displayed in some other window
     " buffer remains modified if confirm dialog is canceled
-    if !getbufvar(buffer, '&modified')
+    if !getbufvar(buffer, '&modified') || occurrence > 1
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
   endif
@@ -477,10 +478,10 @@ function! s:switch_tab(n, confirm)
   let &hidden = 0
 
   if a:n < 0
-    execute a:confirm ? 'silent! confirm enew' : 'enew!'
+    execute a:confirm ? 'confirm enew' : 'enew!'
   else
     let buffer = w:wintabs_buflist[a:n]
-    execute a:confirm ? 'silent! confirm buffer '.buffer : 'buffer! '.buffer
+    execute a:confirm ? 'confirm buffer '.buffer : 'buffer! '.buffer
   endif
 
   " restore hidden
@@ -558,6 +559,9 @@ endfunction
 
 " delete buffer from buflist if it isn't attached to any wintab
 function! s:purge(buffer)
+  if !buflisted(a:buffer)
+    return
+  endif
   for tabpage in range(1, tabpagenr('$'))
     if index(tabpagebuflist(tabpage), a:buffer) != -1
       return
@@ -570,3 +574,13 @@ function! s:purge(buffer)
   endfor
   execute 'bdelete '.a:buffer
 endfunction
+
+" count in how many windows in all vimtabs a buffer is shown
+function! s:count_occurrence(buffer)
+  let buflist = []
+  for i in range(tabpagenr('$'))
+    call extend(buflist, tabpagebuflist(i + 1))
+  endfor
+  return count(buflist, a:buffer)
+endfunction
+
