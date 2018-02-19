@@ -558,6 +558,9 @@ endfunction
 
 " delete buffer from buflist if it isn't attached to any wintab
 function! s:purge(buffer)
+  if !buflisted(a:buffer)
+    return
+  endif
   for tabpage in range(1, tabpagenr('$'))
     if index(tabpagebuflist(tabpage), a:buffer) != -1
       return
