@@ -20,6 +20,10 @@ Wintabs manages long tablines nicely (better than Vim does!):
 
 ![image](https://raw.githubusercontent.com/zefei/vim-wintabs/master/screenshots/screenshot3.png)
 
+Using Powerline fonts:
+
+![image](https://raw.githubusercontent.com/zefei/vim-wintabs-powerline/master/screenshots/screenshot1.png)
+
 # Installation
 
 Use your favorite package manager to install:
