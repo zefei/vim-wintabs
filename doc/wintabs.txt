@@ -202,6 +202,9 @@ default: wintabs#renderers#defaults()
                 buffer renderer implementation inside 
                 `autoload/wintabs/renderers.vim`.
 
+                vim-wintabs-powerline provides a set of renderers for using 
+                Powerline fonts with wintabs.
+
 *g:wintabs_ui_modified*
 values: string
 default: ' +'
@@ -263,6 +266,11 @@ default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
 
 ==============================================================================
 FAQ                                                              *wintabs-faq*
+
+A: Does wintabs support Powerline fonts?
+
+Q: Yes. The vim-wintabs-powerline addon provides a set of renderers for using 
+Powerline fonts with wintabs.
 
 A: Does wintabs support Vim sessions?
 
