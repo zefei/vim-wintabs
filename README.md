@@ -78,7 +78,7 @@ details.
 
 A: Does wintabs support Powerline fonts?
 
-Q: Yes. The vim-wintabs-powerline addon provides a set of renderers for using 
+Q: Yes. The [vim-wintabs-powerline addon](https://github.com/zefei/vim-wintabs-powerline) provides a set of renderers for using 
 Powerline fonts with wintabs.
 
 A: Does wintabs support Vim sessions?
