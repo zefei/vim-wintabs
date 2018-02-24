@@ -47,9 +47,10 @@ keys mapped, these are the essential ones:
 
     commands             | mapping keys                 | replacing Vim commands
     ---------------------+------------------------------+-----------------------
-    :WintabsNext         | <Plug>(wintabs_next)         | :bn!
-    :WintabsPrevious     | <Plug>(wintabs_previous)     | :bp!
-    :WintabsClose        | <Plug>(wintabs_close)        | :bd
+    :WintabsNext         | <Plug>(wintabs_next)         | :bnext!
+    :WintabsPrevious     | <Plug>(wintabs_previous)     | :bprevious!
+    :WintabsClose        | <Plug>(wintabs_close)        | :bdelete
+    :WintabsUndo         | <Plug>(wintabs_undo)         |
     :WintabsOnly         | <Plug>(wintabs_only)         |
     :WintabsCloseWindow  | <Plug>(wintabs_close_window) | :close, CTRL-W c
     :WintabsOnlyWindow   | <Plug>(wintabs_only_window)  | :only, CTRL-W o
@@ -61,6 +62,7 @@ Below is an example of key mappings:
     map <C-H> <Plug>(wintabs_previous)
     map <C-L> <Plug>(wintabs_next)
     map <C-T>c <Plug>(wintabs_close)
+    map <C-T>u <Plug>(wintabs_undo)
     map <C-T>o <Plug>(wintabs_only)
     map <C-W>c <Plug>(wintabs_close_window)
     map <C-W>o <Plug>(wintabs_only_window)

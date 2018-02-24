@@ -90,7 +90,22 @@ function! wintabs#close()
     endif
   endif
 
+  call wintabs#undo#push(buffer)
   call s:purge(buffer)
+endfunction
+
+" undo closed tab
+function! wintabs#undo()
+  let filepath = wintabs#undo#peak()
+  if empty(filepath)
+    return
+  endif
+  execute 'edit '.filepath
+
+  " pop undo if buffer is successfully changed
+  if bufnr('%') == bufnr(filepath)
+    call wintabs#undo#pop()
+  endif
 endfunction
 
 " close all but current tab
