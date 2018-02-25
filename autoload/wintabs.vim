@@ -90,8 +90,7 @@ function! wintabs#close()
     endif
   endif
 
-  call wintabs#undo#push(buffer)
-  call s:purge(buffer)
+  call s:post_delete(buffer)
 endfunction
 
 " undo closed tab
@@ -136,7 +135,7 @@ function! wintabs#only()
   call wintabs#init()
 
   for buffer in deleted_buflist
-    call s:purge(buffer)
+    call s:post_delete(buffer)
   endfor
 endfunction
 
@@ -560,7 +559,7 @@ function! s:close_tabs_window()
   endif
 
   for buffer in deleted_buflist
-    call s:purge(buffer)
+    call s:post_delete(buffer)
   endfor
 endfunction
 
@@ -570,6 +569,12 @@ function! s:is_in_buflist(tabnr, winnr, buffer)
   let window = a:winnr == 0 ? winnr() : a:winnr
   let buflist = wintabs#gettabwinvar(tabpage, window, 'wintabs_buflist', [])
   return index(buflist, a:buffer) != -1
+endfunction
+
+" run post-delete triggers
+function! s:post_delete(buffer)
+  call wintabs#undo#push(a:buffer)
+  call s:purge(a:buffer)
 endfunction
 
 " delete buffer from buflist if it isn't attached to any wintab
