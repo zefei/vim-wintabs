@@ -99,9 +99,16 @@ function! wintabs#undo()
   if empty(filepath)
     return
   endif
-  execute 'edit '.filepath
 
-  " pop undo if buffer is successfully changed
+  " if peak isn't valid, pop and try again
+  if bufnr('%') == bufnr(filepath) || !filereadable(filepath)
+    call wintabs#undo#pop()
+    call wintabs#undo()
+    return
+  endif
+
+  " edit peak, pop if buffer is successfully changed
+  execute 'edit '.filepath
   if bufnr('%') == bufnr(filepath)
     call wintabs#undo#pop()
   endif
