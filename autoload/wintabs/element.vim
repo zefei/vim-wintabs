@@ -1,5 +1,19 @@
 " get display width of element(s)
 function! wintabs#element#len(var)
+  return wintabs#memoize#call(function('s:len'), a:var)
+endfunction
+
+" get rendered text of element(s)
+function! wintabs#element#render(var)
+  return wintabs#memoize#call(function('s:render'), a:var)
+endfunction
+
+" use wintabs#element#len to slice element(s)
+function! wintabs#element#slice(var, start, width)
+  return wintabs#memoize#call(function('s:slice'), a:var, a:start, a:width)
+endfunction
+
+function! s:len(var)
   if type(a:var) == type('')
     return strdisplaywidth(a:var)
   endif
@@ -19,8 +33,7 @@ function! wintabs#element#len(var)
   return 0
 endfunction
 
-" get rendered text of element(s)
-function! wintabs#element#render(var)
+function! s:render(var)
   if type(a:var) == type('')
     return a:var
   endif
@@ -59,8 +72,7 @@ function! wintabs#element#render(var)
   return ''
 endfunction
 
-" use wintabs#element#len to slice element(s)
-function! wintabs#element#slice(var, start, width)
+function! s:slice(var, start, width)
   if type(a:var) == type('')
     let skip = ''
     let slice = ''

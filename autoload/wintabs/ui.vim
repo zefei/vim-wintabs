@@ -35,7 +35,7 @@ function! wintabs#ui#reset_statusline(window)
 endfunction
 
 " private functions below
-"
+
 " generate bufline per window
 function! s:get_bufline(window)
   call wintabs#refresh_buflist(a:window)
@@ -104,11 +104,21 @@ endfunction
 
 " truncate bufline
 function! s:truncate_line(window, bufline, width)
+  return wintabs#memoize#call(
+        \function('s:truncate_line_non_memoized'),
+        \a:window,
+        \a:bufline,
+        \a:width,
+        \wintabs#getwinvar(a:window, 'wintabs_bufline_start', 0)
+        \)
+endfunction
+
+function! s:truncate_line_non_memoized(window, bufline, width, line_start)
   let [line, active_start, active_end] = a:bufline
   let line_len = wintabs#element#len(line)
 
   " load line_start from saved value
-  let line_start = wintabs#getwinvar(a:window, 'wintabs_bufline_start', 0)
+  let line_start = a:line_start
   let width = a:width
 
   " arrows are added to indicate truncation
