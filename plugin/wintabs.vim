@@ -7,6 +7,7 @@ let g:loaded_wintabs = 1
 nnoremap <silent> <Plug>(wintabs_next) :<C-U>WintabsNext<CR>
 nnoremap <silent> <Plug>(wintabs_previous) :<C-U>WintabsPrevious<CR>
 nnoremap <silent> <Plug>(wintabs_close) :<C-U>WintabsClose<CR>
+nnoremap <silent> <Plug>(wintabs_undo) :<C-U>WintabsUndo<CR>
 nnoremap <silent> <Plug>(wintabs_only) :<C-U>WintabsOnly<CR>
 nnoremap <silent> <Plug>(wintabs_all) :<C-U>WintabsAll<CR>
 nnoremap <silent> <Plug>(wintabs_close_window) :<C-U>WintabsCloseWindow<CR>
@@ -33,6 +34,7 @@ nnoremap <silent> <Plug>(wintabs_refresh) :<C-U>WintabsRefresh<CR>
 command! WintabsNext call wintabs#jump(1, 0)
 command! WintabsPrevious call wintabs#jump(-1, 0)
 command! WintabsClose call wintabs#close()
+command! WintabsUndo call wintabs#undo()
 command! WintabsOnly call wintabs#only()
 command! WintabsAll call wintabs#all()
 command! WintabsAllBuffers call wintabs#all_buffers()
@@ -68,7 +70,7 @@ call s:set('g:wintabs_renderers', wintabs#renderers#defaults())
 " ui
 call s:set('g:wintabs_ui_modified', ' +')
 call s:set('g:wintabs_ui_readonly', ' -')
-call s:set('g:wintabs_ui_sep_leftmost', '')
+call s:set('g:wintabs_ui_sep_leftmost', ' ')
 call s:set('g:wintabs_ui_sep_inbetween', '|')
 call s:set('g:wintabs_ui_sep_rightmost', '|')
 call s:set('g:wintabs_ui_active_left', ' ')
@@ -97,9 +99,13 @@ endif
 call s:set('g:wintabs_ui_arrow_left', ' < ')
 call s:set('g:wintabs_ui_arrow_right', ' > ')
 call s:set('g:wintabs_ui_sep_spaceline', '|')
+call s:set('g:wintabs_undo_limit', 100)
 
 " init session
 call wintabs#session#init()
+
+" init undo list
+call wintabs#undo#init()
 
 " start wintabs
 call wintabs#init()

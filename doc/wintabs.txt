@@ -30,9 +30,10 @@ or keys mapped, these are the essential ones:
 
   |wintabs-commands|     mapping keys                   replacing Vim commands
   --------------------------------------------------------------------------
-  |:WintabsNext|         |<Plug>(wintabs_next)|
-  |:WintabsPrevious|     |<Plug>(wintabs_previous)|
-  |:WintabsClose|        |<Plug>(wintabs_close)|
+  |:WintabsNext|         |<Plug>(wintabs_next)|           |:bnext|!
+  |:WintabsPrevious|     |<Plug>(wintabs_previous)|       |:bprevious|!
+  |:WintabsClose|        |<Plug>(wintabs_close)|          |:bdelete|
+  |:WintabsUndo|         |<Plug>(wintabs_undo)|
   |:WintabsOnly|         |<Plug>(wintabs_only)|
   |:WintabsCloseWindow|  |<Plug>(wintabs_close_window)|   |:close|, CTRL-W c
   |:WintabsOnlyWindow|   |<Plug>(wintabs_only_window)|    |:only|, CTRL-W o
@@ -44,6 +45,7 @@ Below is an example of key mappings:>
     map <C-H> <Plug>(wintabs_previous)
     map <C-L> <Plug>(wintabs_next)
     map <C-T>c <Plug>(wintabs_close)
+    map <C-T>u <Plug>(wintabs_undo)
     map <C-T>o <Plug>(wintabs_only)
     map <C-W>c <Plug>(wintabs_close_window)
     map <C-W>o <Plug>(wintabs_only_window)
@@ -70,6 +72,10 @@ These are wintab commands and their normal mode key mappings.
 *<Plug>(wintabs_close)*
                 Close the current wintab. Depending on the value of 
                 |g:wintabs_autoclose|, might also close the current window.
+
+*:WintabsUndo*
+*<Plug>(wintabs_undo)*
+                Undo last closed wintab if its file exists.
 
 *:WintabsOnly*
 *<Plug>(wintabs_only)*
@@ -202,6 +208,9 @@ default: wintabs#renderers#defaults()
                 buffer renderer implementation inside 
                 `autoload/wintabs/renderers.vim`.
 
+                vim-wintabs-powerline provides a set of renderers for using 
+                Powerline fonts with wintabs.
+
 *g:wintabs_ui_modified*
 values: string
 default: ' +'
@@ -263,6 +272,11 @@ default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
 
 ==============================================================================
 FAQ                                                              *wintabs-faq*
+
+A: Does wintabs support Powerline fonts?
+
+Q: Yes. The vim-wintabs-powerline addon provides a set of renderers for using 
+Powerline fonts with wintabs.
 
 A: Does wintabs support Vim sessions?
 
