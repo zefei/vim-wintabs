@@ -38,6 +38,21 @@ endfunction
 
 " generate bufline per window
 function! s:get_bufline(window)
+  let buffers = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
+  let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
+  let active = winbufnr(a:window)
+  let active_modified = getbufvar(active, '&modified')
+  return wintabs#memoize#call(
+        \function('s:get_bufline_non_memoized'),
+        \a:window,
+        \buffers,
+        \modified,
+        \active,
+        \active_modified
+        \)
+endfunction
+
+function! s:get_bufline_non_memoized(window, ...)
   call wintabs#refresh_buflist(a:window)
 
   let line = []
@@ -113,12 +128,12 @@ function! s:truncate_line(window, bufline, width)
         \)
 endfunction
 
-function! s:truncate_line_non_memoized(window, bufline, width, line_start)
+function! s:truncate_line_non_memoized(window, bufline, width, ...)
   let [line, active_start, active_end] = a:bufline
   let line_len = wintabs#element#len(line)
 
   " load line_start from saved value
-  let line_start = a:line_start
+  let line_start = wintabs#getwinvar(a:window, 'wintabs_bufline_start', 0)
   let width = a:width
 
   " arrows are added to indicate truncation
