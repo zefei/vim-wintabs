@@ -136,8 +136,8 @@ These are wintab commands and their normal mode key mappings.
 *<Plug>(wintabs_move_to_window_above)*
 *<Plug>(wintabs_move_to_window_below)*
 *<Plug>(wintabs_move_to_window_next)*
-                Move the current wintab to the window after using *wincmd* 
-                motion {arg}.
+                Move the current wintab to the window by using *wincmd* motion 
+                {arg}.
 
 *:WintabsMaximize*
 *<Plug>(wintabs_maximize)*
