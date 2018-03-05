@@ -299,6 +299,43 @@ function! wintabs#move(n)
   call wintabs#init()
 endfunction
 
+" move the current tab to an adjacent window
+function! wintabs#move_to_window(wincmd_arg)
+  let old_winnr = winnr()
+  let buffer = bufnr('%')
+
+  " go to new window
+  execute 'wincmd '.a:wincmd_arg
+  let new_winnr = winnr()
+
+  " if buffer window wasn't changed by wincmd_arg, do nothing
+  if buffer == bufnr('%') || old_winnr == new_winnr
+    return
+  endif
+
+  " temporarily disable switchbuf and autoclose behavior
+  let switchbuf = &switchbuf
+  let &switchbuf = ''
+  let wintabs_switchbuf = g:wintabs_switchbuf
+  let g:wintabs_switchbuf = ''
+  let autoclose = g:wintabs_autoclose
+  let g:wintabs_autoclose = 0
+
+  " open buffer in new window, go back to old window, close current buffer, come 
+  " back to new window
+  execute 'buffer '.buffer
+  execute old_winnr.'wincmd w'
+  call wintabs#close()
+  execute new_winnr.'wincmd w'
+
+  " restore switchbuf and autoclose
+  let &switchbuf = switchbuf
+  let g:wintabs_switchbuf = wintabs_switchbuf
+  let g:wintabs_autoclose = autoclose
+
+  call wintabs#init()
+endfunction
+
 " move the current split window to its own Vim tab
 function! wintabs#maximize()
   " do nothing if current Vim tab has only one window
