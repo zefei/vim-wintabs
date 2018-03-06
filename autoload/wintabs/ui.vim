@@ -121,13 +121,15 @@ endfunction
 
 " truncate bufline
 function! s:truncate_line(window, bufline, width)
-  return wintabs#memoize#call(
+  let [elements, line_start] = wintabs#memoize#call(
         \function('s:truncate_line_non_memoized'),
         \a:window,
         \a:bufline,
         \a:width,
         \wintabs#getwinvar(a:window, 'wintabs_bufline_start', 0)
         \)
+  call setwinvar(a:window, 'wintabs_bufline_start', line_start)
+  return elements
 endfunction
 
 function! s:truncate_line_non_memoized(window, bufline, width, ...)
@@ -146,7 +148,7 @@ function! s:truncate_line_non_memoized(window, bufline, width, ...)
   let left_arrow_len = wintabs#element#len(left_arrow)
   let right_arrow_len = wintabs#element#len(right_arrow)
 
-  " adjust line_start and width to accommodate actie buffer and arrows
+  " adjust line_start and width to accommodate active buffer and arrows
   " 3 passes are needed to satisfy enough constraints
   for i in range(3)
     " line_start <= active_start < active_end <= line_start + width
@@ -211,7 +213,7 @@ function! s:truncate_line_non_memoized(window, bufline, width, ...)
   if has_right_arrow
     call add(elements, right_arrow)
   endif
-  return elements
+  return [elements, line_start]
 endfunction
 
 " generate space (vim tabs) line
