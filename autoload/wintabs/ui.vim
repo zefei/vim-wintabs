@@ -40,17 +40,16 @@ endfunction
 
 " generate bufline per window
 function! s:get_bufline(window)
-  let buffers = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
+  let buffers = copy(wintabs#getwinvar(a:window, 'wintabs_buflist', []))
+  call add(buffers, winbufnr(a:window))
+  let empty = map(copy(buffers), "bufname(v:val) == ''")
   let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
-  let active = winbufnr(a:window)
-  let active_modified = getbufvar(active, '&modified')
   return wintabs#memoize#call(
         \function('s:get_bufline_non_memoized'),
         \a:window,
         \buffers,
+        \empty,
         \modified,
-        \active,
-        \active_modified
         \)
 endfunction
 
