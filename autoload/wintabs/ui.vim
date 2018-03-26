@@ -42,13 +42,13 @@ endfunction
 function! s:get_bufline(window)
   let buffers = copy(wintabs#getwinvar(a:window, 'wintabs_buflist', []))
   call add(buffers, winbufnr(a:window))
-  let empty = map(copy(buffers), "bufname(v:val) == ''")
+  let bufnames = map(copy(buffers), "bufname(v:val)")
   let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
   return wintabs#memoize#call(
         \function('s:get_bufline_non_memoized'),
         \a:window,
         \buffers,
-        \empty,
+        \bufnames,
         \modified,
         \)
 endfunction
