@@ -27,6 +27,11 @@ nnoremap <silent> <Plug>(wintabs_first) :<C-U>WintabsFirst<CR>
 nnoremap <silent> <Plug>(wintabs_last) :<C-U>WintabsLast<CR>
 nnoremap <silent> <Plug>(wintabs_move_left) :<C-U>WintabsMove -1<CR>
 nnoremap <silent> <Plug>(wintabs_move_right) :<C-U>WintabsMove 1<CR>
+nnoremap <silent> <Plug>(wintabs_move_to_window_left) :<C-U>WintabsMoveToWindow h<CR>
+nnoremap <silent> <Plug>(wintabs_move_to_window_right) :<C-U>WintabsMoveToWindow l<CR>
+nnoremap <silent> <Plug>(wintabs_move_to_window_above) :<C-U>WintabsMoveToWindow k<CR>
+nnoremap <silent> <Plug>(wintabs_move_to_window_below) :<C-U>WintabsMoveToWindow j<CR>
+nnoremap <silent> <Plug>(wintabs_move_to_window_next) :<C-U>WintabsMoveToWindow w<CR>
 nnoremap <silent> <Plug>(wintabs_maximize) :<C-U>WintabsMaximize<CR>
 nnoremap <silent> <Plug>(wintabs_refresh) :<C-U>WintabsRefresh<CR>
 
@@ -46,6 +51,7 @@ command! -nargs=1 WintabsGo call wintabs#go(<q-args> + 0)
 command! WintabsFirst call wintabs#go(1)
 command! WintabsLast call wintabs#go(-1)
 command! -nargs=1 WintabsMove call wintabs#move(<q-args> + 0)
+command! -nargs=1 WintabsMoveToWindow call wintabs#move_to_window(<q-args>)
 command! WintabsMaximize call wintabs#maximize()
 command! -nargs=1 WintabsDo call wintabs#do(<q-args>)
 command! WintabsRefresh call wintabs#init()
