@@ -6,8 +6,10 @@ function! wintabs#ui#get_tabline()
         \s:get_bufline(0),
         \&columns - wintabs#element#len(spaceline),
         \)
-  let space = repeat(' ', &columns - wintabs#element#len(bufline) - wintabs#element#len(spaceline))
-  return wintabs#element#render(bufline).space.wintabs#element#render(spaceline)
+  let padding = g:wintabs_renderers.padding(
+        \&columns - wintabs#element#len(bufline) - wintabs#element#len(spaceline)
+        \)
+  return wintabs#element#render([bufline, padding, spaceline])
 endfunction
 
 " set statusline window by window
@@ -19,12 +21,17 @@ endfunction
 
 " generate statusline window by window
 function! wintabs#ui#get_statusline(window)
-  let bufline = s:truncate_line(a:window, s:get_bufline(a:window), winwidth(a:window))
-  let space = repeat(' ', winwidth(a:window) - wintabs#element#len(bufline))
-
+  let bufline = s:truncate_line(
+        \a:window,
+        \s:get_bufline(a:window),
+        \winwidth(a:window)
+        \)
+  let padding = g:wintabs_renderers.padding(
+        \winwidth(a:window) - wintabs#element#len(bufline)
+        \)
   " reseter is attached to detect stale status
   let reseter = '%{wintabs#ui#reset_statusline('.a:window.')}'
-  return reseter.wintabs#element#render(bufline).space
+  return wintabs#element#render([reseter, bufline, padding])
 endfunction
 
 " reset statusline

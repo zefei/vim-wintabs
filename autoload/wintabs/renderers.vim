@@ -7,6 +7,7 @@ function! wintabs#renderers#defaults()
         \'left_arrow': function('wintabs#renderers#left_arrow'),
         \'right_arrow': function('wintabs#renderers#right_arrow'),
         \'line_sep': function('wintabs#renderers#line_sep'),
+        \'padding': function('wintabs#renderers#padding'),
         \}
 endfunction
 
@@ -82,6 +83,14 @@ function! wintabs#renderers#line_sep()
   return {
         \'type': 'sep',
         \'label': g:wintabs_ui_sep_spaceline,
+        \'highlight': '',
+        \}
+endfunction
+
+function! wintabs#renderers#padding(len)
+  return {
+        \'type': 'text',
+        \'label': repeat(' ', a:len),
         \'highlight': '',
         \}
 endfunction
