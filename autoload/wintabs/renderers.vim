@@ -89,7 +89,7 @@ endfunction
 
 function! wintabs#renderers#padding(len)
   return {
-        \'type': 'text',
+        \'type': 'sep',
         \'label': repeat(' ', a:len),
         \'highlight': '',
         \}
