@@ -51,7 +51,7 @@ function! s:get_bufline(window)
   call add(buffers, winbufnr(a:window))
   let bufnames = map(copy(buffers), "bufname(v:val)")
   let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
-  return wintabs#memoize#call(
+  let bufline = wintabs#memoize#call(
         \function('s:get_bufline_non_memoized'),
         \a:window,
         \buffers,
@@ -59,6 +59,8 @@ function! s:get_bufline(window)
         \modified,
         \a:window == winnr(),
         \)
+  call wintabs#session#save(tabpagenr(), a:window)
+  return bufline
 endfunction
 
 function! s:get_bufline_non_memoized(window, ...)
