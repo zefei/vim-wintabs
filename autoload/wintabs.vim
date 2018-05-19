@@ -450,28 +450,22 @@ function! wintabs#switching_buffer()
           continue
         endif
 
+        " buffer exists in another window
         if s:is_in_buflist(tabpage, window, buffer)
-          let to_close = exists('w:wintabs_buflist') ? 0 : winnr()
-          let same_tab = tabpage == tabpagenr()
-          if to_close && !same_tab
-            " close current window if it's a new window in a different tab
-            confirm close
-          else
-            " close current tab without autoclose
-            let autoclose = g:wintabs_autoclose
-            let g:wintabs_autoclose = 0
+          " if window isn't new (wintabs_buflist exists), close buffer
+          " otherwise close window since it's likely opened for this buffer
+          if exists('w:wintabs_buflist')
             call wintabs#close()
-            let g:wintabs_autoclose = autoclose
+          else
+            confirm close
           endif
 
-          " switch to the existing buffer
-          execute 'tabnext '.tabpage
-          execute window.'wincmd w'
-          execute 'confirm buffer '.buffer
-
-          " close previous window if it's a new window in current tab
-          if to_close && same_tab
-            execute to_close.'wincmd c'
+          " if vim supports async, switch to the existing buffer at next tick to 
+          " avoid racing with autocmds, otherwise switch immediately
+          if has('timers') && has('lambda')
+            call timer_start(0, {-> s:open_buffer_in(tabpage, window, buffer)})
+          else
+            call s:open_buffer_in(tabpage, window, buffer)
           endif
           return
         endif
@@ -648,3 +642,9 @@ function! s:count_occurrence(buffer)
   return count(buflist, a:buffer)
 endfunction
 
+" open a buffer inside a particular window
+function! s:open_buffer_in(tabpage, window, buffer)
+  execute 'tabnext '.a:tabpage
+  execute a:window.'wincmd w'
+  execute 'confirm buffer '.a:buffer
+endfunction
