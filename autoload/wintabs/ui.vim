@@ -47,8 +47,8 @@ endfunction
 
 " generate bufline per window
 function! s:get_bufline(window)
-  let buffers = copy(wintabs#getwinvar(a:window, 'wintabs_buflist', []))
-  call add(buffers, winbufnr(a:window))
+  call wintabs#refresh_buflist(a:window)
+  let buffers = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
   let bufnames = map(copy(buffers), "bufname(v:val)")
   let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
   let bufline = wintabs#memoize#call(
@@ -57,15 +57,13 @@ function! s:get_bufline(window)
         \buffers,
         \bufnames,
         \modified,
-        \a:window == winnr(),
+        \winnr(),
+        \winbufnr(a:window),
         \)
-  call wintabs#session#save(tabpagenr(), a:window)
   return bufline
 endfunction
 
 function! s:get_bufline_non_memoized(window, ...)
-  call wintabs#refresh_buflist(a:window)
-
   let line = []
   let active_start = 0
   let active_end = 0
