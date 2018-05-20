@@ -82,10 +82,7 @@ function! wintabs#close()
   else
     let occurrence = s:count_occurrence(buffer)
     call s:switch_tab(switch_to, 1)
-
-    " only remove buffer that is unmodifed or displayed in some other window
-    " buffer remains modified if confirm dialog is canceled
-    if !getbufvar(buffer, '&modified') || occurrence > 1
+    if s:can_be_closed(buffer)
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
   endif
@@ -126,11 +123,11 @@ function! wintabs#only()
   for buffer in w:wintabs_buflist
     if buffer == bufnr('%')
       call add(buflist, buffer)
-    elseif getbufvar(buffer, '&modified')
+    elseif s:can_be_closed(buffer)
+      call add(deleted_buflist, buffer)
+    else
       call add(buflist, buffer)
       let modified = 1
-    else
-      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -516,7 +513,7 @@ function! s:current_tab()
   return [n, found]
 endfunction
 
-" switch to nth tab, or create a new tab if n < 0
+" switch to (n-1)th tab, or create a new tab if n < 0
 " do nothing if n >= number of tabs
 " use confirm dialog if confirm isn't 0
 function! s:switch_tab(n, confirm)
@@ -576,11 +573,11 @@ function! s:close_tabs_window()
 
   " keep modified tabs
   for buffer in w:wintabs_buflist
-    if getbufvar(buffer, '&modified')
+    if s:can_be_closed(buffer)
+      call add(deleted_buflist, buffer)
+    else
       call add(buflist, buffer)
       let modified = 1
-    else
-      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -588,8 +585,8 @@ function! s:close_tabs_window()
     let s:modified = 1
     let w:wintabs_buflist = buflist
 
-    " if current buffer should be closed (not modified), switch to first tab
-    if !getbufvar(bufnr('%'), '&modified')
+    " if current buffer should be closed, switch to first tab
+    if s:can_be_closed(bufnr('%'))
       call s:switch_tab(0, 0)
     endif
   else
@@ -615,31 +612,39 @@ function! s:post_delete(buffer)
   call s:purge(a:buffer)
 endfunction
 
-" delete buffer from buflist if it isn't attached to any wintab
+" delete buffer from buflist if it's safe to do so: the buffer must be listed, 
+" not modified, not attached to any window, not shown in any window
 function! s:purge(buffer)
   if !buflisted(a:buffer)
+        \|| getbufvar(a:buffer, '&modified')
+        \|| s:count_occurrence(a:buffer) > 0 
     return
   endif
   for tabpage in range(1, tabpagenr('$'))
     if index(tabpagebuflist(tabpage), a:buffer) != -1
       return
     endif
-    for window in range(1, tabpagewinnr(tabpage, '$'))
-      if s:is_in_buflist(tabpage, window, a:buffer)
-        return
-      endif
-    endfor
   endfor
   execute 'bdelete '.a:buffer
 endfunction
 
-" count in how many windows in all vimtabs a buffer is shown
+" count in how many windows in all vimtabs a buffer is attached
 function! s:count_occurrence(buffer)
-  let buflist = []
-  for i in range(tabpagenr('$'))
-    call extend(buflist, tabpagebuflist(i + 1))
+  let count = 0
+  for tabpage in range(1, tabpagenr('$'))
+    for window in range(1, tabpagewinnr(tabpage, '$'))
+      if s:is_in_buflist(tabpage, window, a:buffer)
+        let count += 1
+      endif
+    endfor
   endfor
-  return count(buflist, a:buffer)
+  return count
+endfunction
+
+" test if a buffer can be safely closed: it can if it isn't modified, or it's 
+" attached to more than one window
+function! s:can_be_closed(buffer)
+  return !getbufvar(a:buffer, '&modified') || s:count_occurrence(a:buffer) > 1
 endfunction
 
 " open a buffer inside a particular window
