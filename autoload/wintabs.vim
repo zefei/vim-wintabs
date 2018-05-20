@@ -16,8 +16,7 @@ endfunction
 
 " jump to next/previous tab
 " next tab if offset == 1, previous tab if offset == -1
-" use confirm dialog if confim isn't 0
-function! wintabs#jump(offset, confirm)
+function! wintabs#jump(offset)
   call wintabs#refresh_buflist(0)
 
   let [n, found] = s:current_tab()
@@ -37,7 +36,7 @@ function! wintabs#jump(offset, confirm)
   let size = len(w:wintabs_buflist)
   let n = (n + offset) % size
   let n = n < 0 ? n + size : n
-  call s:switch_tab(n, a:confirm)
+  call s:switch_tab(n)
 endfunction
 
 " close current tab
@@ -90,11 +89,8 @@ function! wintabs#close()
   if close_window
     call s:close_window()
   else
-    let occurrence = s:count_occurrence(buffer)
-    call s:switch_tab(switch_to, 0)
-    if s:can_be_closed(buffer)
-      call filter(w:wintabs_buflist, 'v:val != '.buffer)
-    endif
+    call s:switch_tab(switch_to)
+    call filter(w:wintabs_buflist, 'v:val != '.buffer)
   endif
 
   call s:post_delete(buffer)
@@ -275,7 +271,7 @@ function! wintabs#go(n)
     return
   endif
 
-  call s:switch_tab(n, 0)
+  call s:switch_tab(n)
 endfunction
 
 " move the current tab by n tabs
@@ -525,22 +521,20 @@ endfunction
 
 " switch to (n-1)th tab, or create a new tab if n < 0
 " do nothing if n >= number of tabs
-" use confirm dialog if confirm isn't 0
-function! s:switch_tab(n, confirm)
+function! s:switch_tab(n)
   " do nothing if n >= size
   if a:n >= len(w:wintabs_buflist)
     return
   endif
 
-  " set nohidden to trigger confirm behavior
+  " set hidden to keep changes in current buffer
   let hidden = &hidden
-  let &hidden = 0
+  let &hidden = 1
 
   if a:n < 0
-    execute a:confirm ? 'confirm enew' : 'enew!'
+    enew
   else
-    let buffer = w:wintabs_buflist[a:n]
-    execute a:confirm ? 'confirm buffer '.buffer : 'buffer! '.buffer
+    execute 'buffer '.w:wintabs_buflist[a:n]
   endif
 
   " restore hidden
@@ -564,7 +558,7 @@ function! s:close_window()
 
   " otherwise close all wintabs
   let w:wintabs_buflist = []
-  call s:switch_tab(-1, 0)
+  call s:switch_tab(-1)
 endfunction
 
 " close all tabs in current window and window itself
@@ -597,7 +591,7 @@ function! s:close_tabs_window()
 
     " if current buffer should be closed, switch to first tab
     if s:can_be_closed(bufnr('%'))
-      call s:switch_tab(0, 0)
+      call s:switch_tab(0)
     endif
   else
     call s:close_window()

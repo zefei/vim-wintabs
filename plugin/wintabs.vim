@@ -36,8 +36,8 @@ nnoremap <silent> <Plug>(wintabs_maximize) :<C-U>WintabsMaximize<CR>
 nnoremap <silent> <Plug>(wintabs_refresh) :<C-U>WintabsRefresh<CR>
 
 " commands
-command! WintabsNext call wintabs#jump(1, 0)
-command! WintabsPrevious call wintabs#jump(-1, 0)
+command! WintabsNext call wintabs#jump(1)
+command! WintabsPrevious call wintabs#jump(-1)
 command! WintabsClose call wintabs#close()
 command! WintabsUndo call wintabs#undo()
 command! WintabsOnly call wintabs#only()
