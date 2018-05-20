@@ -42,10 +42,41 @@ endfunction
 
 " close current tab
 function! wintabs#close()
-  call wintabs#refresh_buflist(0)
 
-  let size = len(w:wintabs_buflist)
   let buffer = bufnr('%')
+  let name = expand('%:t')
+  let msg = 'Do you want to save the changes you made to document '
+  let msg = msg . (name == '' ? "\"Untitled\"\n" : (name . "\n"))
+  let msg = msg . "Your changes will be lost if you don't save them."
+
+  " First get buffer into a non-problematic state so we don't need to deal
+  " with other odd vim settings with unsaved changes, "confirm", listed vs.
+  " unlisted buffers.
+  let occurrence = s:count_occurrence(buffer)
+  if getbufvar(buffer, '&modified') && occurrence < 2
+    let choice = confirm(msg . "\n", "&Save\n&Cancel\n&Don't Save", 2)
+    if choice == 3
+      " Don't save: Reset the file then call WintabsClose
+      " earlier 1f doesn't always work (like if you already did undo a few
+      " times without saving), but it does work on brand new files that have
+      " no name!
+      if name == ''
+        execute "silent earlier 1f"
+      else
+        execute "e!"
+      endif
+    elseif choice == 2 || choice == 0
+      return
+    elseif choice == 1
+      execute ":w"
+    endif
+  endif
+  " Closing should not prompt or error after this point. Note: the size has to
+  " be computed after restoring the file changes and then recalling
+  " refresh_buflist because that effects len(w:wintabs_buflist).
+  call wintabs#refresh_buflist(0)
+  let size = len(w:wintabs_buflist)
+
   let [n, found] = s:current_tab()
   let close_window = 0
 
