@@ -14,7 +14,7 @@ endfunction
 function! wintabs#renderers#buffer(bufnr, config)
   return {
         \'label': wintabs#renderers#buf_label(a:bufnr),
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -34,7 +34,7 @@ function! wintabs#renderers#buffer_sep(config)
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -45,7 +45,7 @@ function! wintabs#renderers#tab(tabnr, config)
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -59,7 +59,7 @@ function! wintabs#renderers#tab_sep(config)
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -67,7 +67,7 @@ function! wintabs#renderers#left_arrow()
   return {
         \'type': 'left_arrow',
         \'label': g:wintabs_ui_arrow_left,
-        \'highlight': '',
+        \'highlight': g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -75,7 +75,7 @@ function! wintabs#renderers#right_arrow()
   return {
         \'type': 'right_arrow',
         \'label': g:wintabs_ui_arrow_right,
-        \'highlight': '',
+        \'highlight': g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -83,7 +83,7 @@ function! wintabs#renderers#line_sep()
   return {
         \'type': 'sep',
         \'label': g:wintabs_ui_sep_spaceline,
-        \'highlight': '',
+        \'highlight': g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
@@ -91,7 +91,7 @@ function! wintabs#renderers#padding(len)
   return {
         \'type': 'sep',
         \'label': repeat(' ', a:len),
-        \'highlight': '',
+        \'highlight': g:wintabs_ui_inactive_higroup,
         \}
 endfunction
 
