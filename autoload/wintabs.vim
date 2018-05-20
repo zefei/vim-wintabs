@@ -43,7 +43,17 @@ endfunction
 " close current tab
 function! wintabs#close()
   call wintabs#refresh_buflist(0)
+  let buffer = bufnr('%')
 
+  " try to save buffer if it's modified, abort if save fails
+  if !s:can_be_closed(buffer)
+    confirm edit
+  endif
+  if !s:can_be_closed(buffer)
+    return
+  endif
+
+  call wintabs#refresh_buflist(0)
   let size = len(w:wintabs_buflist)
   let buffer = bufnr('%')
   let [n, found] = s:current_tab()
@@ -81,7 +91,7 @@ function! wintabs#close()
     call s:close_window()
   else
     let occurrence = s:count_occurrence(buffer)
-    call s:switch_tab(switch_to, 1)
+    call s:switch_tab(switch_to, 0)
     if s:can_be_closed(buffer)
       call filter(w:wintabs_buflist, 'v:val != '.buffer)
     endif
@@ -554,7 +564,7 @@ function! s:close_window()
 
   " otherwise close all wintabs
   let w:wintabs_buflist = []
-  call s:switch_tab(-1, 1)
+  call s:switch_tab(-1, 0)
 endfunction
 
 " close all tabs in current window and window itself
