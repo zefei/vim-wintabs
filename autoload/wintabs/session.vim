@@ -80,7 +80,8 @@ function! s:session_save_window(tabpage, window)
 
   " bufnr isn't persisted across sessions, but bufname is
   for buffer in buflist
-    call add(s:session[a:tabpage][a:window], bufname(buffer))
+    let pathname = fnamemodify(bufname(buffer), ':p')
+    call add(s:session[a:tabpage][a:window], pathname)
   endfor
 endfunction
 
