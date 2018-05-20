@@ -187,7 +187,7 @@ default: 0
 
 *g:wintabs_switchbuf*
 values: '', 'useopen', or 'usetab'
-default: ''
+default: value of |switchbuf| option
                 This controls the behavior when switching between buffers.
                 'useopen': jump to the first window in current vim tab that 
                 contains the specific buffer. Otherwise open it in current 
