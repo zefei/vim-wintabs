@@ -83,15 +83,15 @@ details.
 
 # FAQ
 
-A: Does wintabs support Powerline fonts?
+Q: Does wintabs support Powerline fonts?
 
-Q: Yes. The [vim-wintabs-powerline 
+A: Yes. The [vim-wintabs-powerline 
 plugin](https://github.com/zefei/vim-wintabs-powerline) provides a set of 
 renderers for using Powerline fonts with wintabs.
 
-A: Does wintabs support Vim sessions?
+Q: Does wintabs support Vim sessions?
 
-Q: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also 
+A: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also 
 supports [xolox/vim-session](https://github.com/xolox/vim-session) out of the 
 box.
 
