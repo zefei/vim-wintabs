@@ -385,6 +385,7 @@ function! wintabs#init()
     augroup END
     call wintabs#ui#set_statusline()
 
+    " show original statusline in tabline
     if !empty(g:wintabs_statusline)
       set showtabline=2
       let &tabline = g:wintabs_statusline
@@ -407,6 +408,14 @@ function! wintabs#init()
   augroup wintabs_switching_buffer
     autocmd!
     autocmd BufWinEnter * call wintabs#switching_buffer()
+  augroup END
+
+  " handle statuslie/tabline changes done by other plugins
+  augroup wintabs_override_plugin_changes
+    autocmd!
+    autocmd CmdwinEnter,CmdwinLeave,GUIEnter,ColorScheme,OptionSet,SourcePre,
+          \VimEnter,WinEnter,BufWinEnter,FileType,BufUnload,CompleteDone,
+          \VimResized,TabEnter,BufWritePost,SessionLoadPost * call s:override_plugin_changes()
   augroup END
 endfunction
 
@@ -630,7 +639,7 @@ endfunction
 function! s:purge(buffer)
   if !buflisted(a:buffer)
         \|| getbufvar(a:buffer, '&modified')
-        \|| s:count_occurrence(a:buffer) > 0 
+        \|| s:count_occurrence(a:buffer) > 0
     return
   endif
   for tabpage in range(1, tabpagenr('$'))
@@ -665,4 +674,15 @@ function! s:open_buffer_in(tabpage, window, buffer)
   execute 'tabnext '.a:tabpage
   execute a:window.'wincmd w'
   execute 'confirm buffer '.a:buffer
+endfunction
+
+" override statusline/tabline changes made by other plugins
+function! s:override_plugin_changes()
+  if g:wintabs_display == 'tabline'
+        \&& match(&tabline, '%!wintabs#ui#get_tabline') == -1
+    set tabline=%!wintabs#ui#get_tabline()
+  elseif g:wintabs_display == 'statusline'
+        \&& match(&statusline, '%!wintabs#ui#get_statusline') == -1
+    call wintabs#ui#set_statusline()
+  endif
 endfunction
