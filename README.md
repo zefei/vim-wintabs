@@ -95,6 +95,11 @@ A: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also
 supports [xolox/vim-session](https://github.com/xolox/vim-session) out of the 
 box.
 
+Q: Does wintabs work with statusline/tabline plugins like airline?
+
+A: Wintabs can work reasonably well with statusline/tabline plugins as long as 
+you load wintabs after other plugins.
+
 # License
 
 MIT License.
