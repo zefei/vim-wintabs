@@ -384,6 +384,15 @@ function! wintabs#init()
       autocmd BufWinEnter,WinEnter,VimEnter * call wintabs#ui#set_statusline()
     augroup END
     call wintabs#ui#set_statusline()
+
+    if !empty(g:wintabs_statusline)
+      set showtabline=2
+      let &tabline = g:wintabs_statusline
+      augroup wintabs_set_tabline
+        autocmd!
+        autocmd InsertEnter,InsertLeave,CursorMoved,CursorMovedI * :let &ro=&ro
+      augroup END
+    endif
   else
     autocmd BufWinEnter,WinEnter,VimEnter * call wintabs#refresh_buflist(0)
   endif

@@ -69,6 +69,13 @@ call s:set('g:wintabs_autoclose', 1)
 call s:set('g:wintabs_autoclose_vim', 0)
 call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_switchbuf', &switchbuf)
+if exists('*airline#statusline')
+  call s:set('g:wintabs_statusline', '%!airline#statusline(winnr())')
+elseif !empty(&statusline)
+  call s:set('g:wintabs_statusline', '%#StatusLine#'.&statusline.'%##')
+else
+  call s:set('g:wintabs_statusline', '')
+endif
 call s:set('g:wintabs_reverse_order', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])
 call s:set('g:wintabs_renderers', wintabs#renderers#defaults())

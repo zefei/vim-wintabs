@@ -71,6 +71,11 @@ Below is an example of key mappings:
 
 See `:help wintabs-commands` for all available commands and mappings.
 
+Wintabs can display buffers on either tabline or statusline. It's recommended to 
+use tabline if you typically work without using split windows; otherwise, 
+statusline is recommended. If Wintabs is set to use statusline, it automatically 
+moves your original statusline content to tabline.
+
 # Configuration
 
 Wintabs has a handful of configuration options, see `:help wintabs-options` for 
@@ -80,8 +85,9 @@ details.
 
 A: Does wintabs support Powerline fonts?
 
-Q: Yes. The [vim-wintabs-powerline addon](https://github.com/zefei/vim-wintabs-powerline) provides a set of renderers for using 
-Powerline fonts with wintabs.
+Q: Yes. The [vim-wintabs-powerline 
+plugin](https://github.com/zefei/vim-wintabs-powerline) provides a set of 
+renderers for using Powerline fonts with wintabs.
 
 A: Does wintabs support Vim sessions?
 
