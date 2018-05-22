@@ -71,6 +71,8 @@ call s:set('g:wintabs_autoclose_vimtab', 0)
 call s:set('g:wintabs_switchbuf', &switchbuf)
 if exists('*airline#statusline')
   call s:set('g:wintabs_statusline', '%!airline#statusline(winnr())')
+elseif exists('*lightline#statusline')
+  call s:set('g:wintabs_statusline', '%!lightline#statusline(0)')
 elseif !empty(&statusline)
   call s:set('g:wintabs_statusline', '%#StatusLine#'.&statusline.'%##')
 else
