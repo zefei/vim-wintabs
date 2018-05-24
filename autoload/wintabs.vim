@@ -652,15 +652,15 @@ endfunction
 
 " count in how many windows in all vimtabs a buffer is attached
 function! s:count_occurrence(buffer)
-  let count = 0
+  let occurrences = 0
   for tabpage in range(1, tabpagenr('$'))
     for window in range(1, tabpagewinnr(tabpage, '$'))
       if s:is_in_buflist(tabpage, window, a:buffer)
-        let count += 1
+        let occurrences += 1
       endif
     endfor
   endfor
-  return count
+  return occurrences
 endfunction
 
 " test if a buffer can be safely closed: it can if it isn't modified, or it's 
