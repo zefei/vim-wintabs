@@ -12,45 +12,49 @@ function! wintabs#renderers#defaults()
 endfunction
 
 function! wintabs#renderers#buffer(bufnr, config)
+  let is_active = a:config.is_active && a:config.is_active_window
   return {
         \'label': wintabs#renderers#buf_label(a:bufnr),
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
 
 function! wintabs#renderers#buffer_sep(config)
   let label = g:wintabs_ui_sep_inbetween
+  let is_active = a:config.is_active && a:config.is_active_window
   if a:config.is_leftmost
     let label = g:wintabs_ui_sep_leftmost
   endif
   if a:config.is_rightmost
     let label = g:wintabs_ui_sep_rightmost
   endif
-  if a:config.is_active && a:config.is_left
+  if is_active && a:config.is_left
     let label = g:wintabs_ui_active_left
   endif
-  if a:config.is_active && a:config.is_right
+  if is_active && a:config.is_right
     let label = g:wintabs_ui_active_right
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
 
 function! wintabs#renderers#tab(tabnr, config)
   let label = wintabs#renderers#tab_label(a:tabnr)
+  let is_active = a:config.is_active && a:config.is_active_window
   if (!a:config.is_active)
     let label = ' '.label.' '
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
 
 function! wintabs#renderers#tab_sep(config)
   let label = ''
+  let is_active = a:config.is_active && a:config.is_active_window
   if a:config.is_active && a:config.is_left
     let label = g:wintabs_ui_active_vimtab_left
   endif
@@ -59,7 +63,7 @@ function! wintabs#renderers#tab_sep(config)
   endif
   return {
         \'label': label,
-        \'highlight': a:config.is_active ? g:wintabs_ui_active_higroup : '',
+        \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
 
