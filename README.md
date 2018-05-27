@@ -26,14 +26,23 @@ Using Powerline fonts:
 
 # Installation
 
-Use your favorite package manager to install:
+Use your favorite package manager to install. `vim-wintabs-powerline` is 
+optional, used for Powerline style rendering.
 
-* [Pathogen](https://github.com/tpope/vim-pathogen)
-  * `git clone https://github.com/zefei/vim-wintabs ~/.vim/bundle/vim-wintabs`
-* [Vundle](https://github.com/gmarik/Vundle.vim)
-  * `Plugin 'zefei/vim-wintabs'`
-* [NeoBundle](https://github.com/Shougo/neobundle.vim)
-  * `NeoBundle 'zefei/vim-wintabs'`
+[pathogen](https://github.com/tpope/vim-pathogen)
+
+    git clone https://github.com/zefei/vim-wintabs ~/.vim/bundle/vim-wintabs
+    git clone https://github.com/zefei/vim-wintabs-powerline ~/.vim/bundle/vim-wintabs-powerline
+
+[vundle](https://github.com/vundlevim/vundle.vim)
+
+    plugin 'zefei/vim-wintabs'
+    plugin 'zefei/vim-wintabs-powerline'
+
+[vim-plug](https://github.com/junegunn/vim-plug)
+
+    plug 'zefei/vim-wintabs'
+    plug 'zefei/vim-wintabs-powerline'
 
 # Usage
 
