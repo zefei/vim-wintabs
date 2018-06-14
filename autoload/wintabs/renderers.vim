@@ -14,7 +14,7 @@ endfunction
 function! wintabs#renderers#buffer(bufnr, config)
   let is_active = a:config.is_active && a:config.is_active_window
   return {
-        \'label': wintabs#renderers#buf_label(a:bufnr),
+        \'label': wintabs#renderers#buf_label(a:bufnr, a:config.index),
         \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
@@ -113,9 +113,21 @@ function! wintabs#renderers#bufname(bufnr)
   return name
 endfunction
 
-function! wintabs#renderers#buf_label(bufnr)
+
+let s:num_to_text_array = ['¹', '²', '³', '⁴', '⁵', '⁶', '⁷', '⁸', '⁹', '⁰' ]
+
+function! s:num_to_text(i)
+  if a:i >= 1 && a:i <= 10
+    return s:num_to_text_array[a:i - 1]
+  else
+    return ''
+  endif
+endfunction
+
+function! wintabs#renderers#buf_label(bufnr, index)
   let label = g:wintabs_ui_buffer_name_format
   let label = substitute(label, "%t", wintabs#renderers#bufname(a:bufnr), "g")
+  let label = substitute(label, "%o", s:num_to_text(a:index+1), "g")
   let label = substitute(label, "%n", a:bufnr, "g")
   return label
 endfunction

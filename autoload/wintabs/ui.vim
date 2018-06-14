@@ -100,6 +100,7 @@ function! s:get_bufline_non_memoized(window, ...)
           \'is_left': active_index >= 0 && i < active_index,
           \'is_right': active_index >= 0 && i > active_index,
           \'is_active': is_active,
+          \'index': i,
           \'is_active_window': is_active_window,
           \})
     let element.type = 'buffer'
