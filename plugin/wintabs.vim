@@ -36,8 +36,8 @@ nnoremap <silent> <Plug>(wintabs_maximize) :<C-U>WintabsMaximize<CR>
 nnoremap <silent> <Plug>(wintabs_refresh) :<C-U>WintabsRefresh<CR>
 
 " commands
-command! WintabsNext call wintabs#jump(1, 0)
-command! WintabsPrevious call wintabs#jump(-1, 0)
+command! WintabsNext call wintabs#jump(1)
+command! WintabsPrevious call wintabs#jump(-1)
 command! WintabsClose call wintabs#close()
 command! WintabsUndo call wintabs#undo()
 command! WintabsOnly call wintabs#only()
@@ -68,7 +68,16 @@ call s:set('g:wintabs_display', 'tabline')
 call s:set('g:wintabs_autoclose', 1)
 call s:set('g:wintabs_autoclose_vim', 0)
 call s:set('g:wintabs_autoclose_vimtab', 0)
-call s:set('g:wintabs_switchbuf', '')
+call s:set('g:wintabs_switchbuf', &switchbuf)
+if exists('g:loaded_airline') && g:loaded_airline
+  call s:set('g:wintabs_statusline', '%!airline#statusline(winnr())')
+elseif exists('g:loaded_lightline') && g:loaded_lightline
+  call s:set('g:wintabs_statusline', '%!lightline#statusline(0)')
+elseif !empty(&statusline)
+  call s:set('g:wintabs_statusline', '%#StatusLine#'.&statusline.'%##')
+else
+  call s:set('g:wintabs_statusline', '')
+endif
 call s:set('g:wintabs_reverse_order', 0)
 call s:set('g:wintabs_ignored_filetypes', ['gitcommit', 'vundle', 'qf', 'vimfiler'])
 call s:set('g:wintabs_renderers', wintabs#renderers#defaults())

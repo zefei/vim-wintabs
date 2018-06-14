@@ -6,8 +6,10 @@ function! wintabs#ui#get_tabline()
         \s:get_bufline(0),
         \&columns - wintabs#element#len(spaceline),
         \)
-  let space = repeat(' ', &columns - wintabs#element#len(bufline) - wintabs#element#len(spaceline))
-  return wintabs#element#render(bufline).space.wintabs#element#render(spaceline)
+  let padding = g:wintabs_renderers.padding(
+        \&columns - wintabs#element#len(bufline) - wintabs#element#len(spaceline)
+        \)
+  return wintabs#element#render([bufline, padding, spaceline])
 endfunction
 
 " set statusline window by window
@@ -19,12 +21,17 @@ endfunction
 
 " generate statusline window by window
 function! wintabs#ui#get_statusline(window)
-  let bufline = s:truncate_line(a:window, s:get_bufline(a:window), winwidth(a:window))
-  let space = repeat(' ', winwidth(a:window) - wintabs#element#len(bufline))
-
+  let bufline = s:truncate_line(
+        \a:window,
+        \s:get_bufline(a:window),
+        \winwidth(a:window)
+        \)
+  let padding = g:wintabs_renderers.padding(
+        \winwidth(a:window) - wintabs#element#len(bufline)
+        \)
   " reseter is attached to detect stale status
   let reseter = '%{wintabs#ui#reset_statusline('.a:window.')}'
-  return reseter.wintabs#element#render(bufline).space
+  return wintabs#element#render([reseter, bufline, padding])
 endfunction
 
 " reset statusline
@@ -40,22 +47,23 @@ endfunction
 
 " generate bufline per window
 function! s:get_bufline(window)
-  let buffers = copy(wintabs#getwinvar(a:window, 'wintabs_buflist', []))
-  call add(buffers, winbufnr(a:window))
+  call wintabs#refresh_buflist(a:window)
+  let buffers = wintabs#getwinvar(a:window, 'wintabs_buflist', [])
   let bufnames = map(copy(buffers), "bufname(v:val)")
   let modified = map(copy(buffers), "getbufvar(v:val, '&modified')")
-  return wintabs#memoize#call(
+  let bufline = wintabs#memoize#call(
         \function('s:get_bufline_non_memoized'),
         \a:window,
         \buffers,
         \bufnames,
         \modified,
+        \winnr(),
+        \winbufnr(a:window),
         \)
+  return bufline
 endfunction
 
 function! s:get_bufline_non_memoized(window, ...)
-  call wintabs#refresh_buflist(a:window)
-
   let line = []
   let active_start = 0
   let active_end = 0
@@ -66,6 +74,8 @@ function! s:get_bufline_non_memoized(window, ...)
   for buffer in buffers
     let is_active = i == active_index
     let is_next_active = i == active_index - 1
+    let is_active_window = g:wintabs_display == 'tabline'
+          \|| (g:wintabs_display == 'statusline' && a:window == winnr())
 
     if i == 0
       if is_active
@@ -78,6 +88,7 @@ function! s:get_bufline_non_memoized(window, ...)
             \'is_left': active_index >= 0,
             \'is_right': 0,
             \'is_active': is_active,
+            \'is_active_window': is_active_window,
             \})
       let element.type = 'sep'
       call add(line, element)
@@ -90,6 +101,7 @@ function! s:get_bufline_non_memoized(window, ...)
           \'is_right': active_index >= 0 && i > active_index,
           \'is_active': is_active,
           \'index': i,
+          \'is_active_window': is_active_window,
           \})
     let element.type = 'buffer'
     let element.number = buffer
@@ -105,6 +117,7 @@ function! s:get_bufline_non_memoized(window, ...)
           \'is_left': active_index >= 0 && i < active_index,
           \'is_right': active_index >= 0 && i >= active_index,
           \'is_active': is_active || is_next_active,
+          \'is_active_window': is_active_window,
           \})
     let element.type = 'sep'
     call add(line, element)
@@ -238,6 +251,7 @@ function! s:get_spaceline()
             \'is_left': active_index >= 0,
             \'is_right': 0,
             \'is_active': is_active,
+            \'is_active_window': 1,
             \})
       let element.type = 'sep'
       call add(line, element)
@@ -249,6 +263,7 @@ function! s:get_spaceline()
           \'is_left': active_index >= 0 && tab < active_index,
           \'is_right': active_index >= 0 && tab > active_index,
           \'is_active': is_active,
+          \'is_active_window': 1,
           \})
     let element.type = 'tab'
     let element.number = tab
@@ -260,6 +275,7 @@ function! s:get_spaceline()
           \'is_left': active_index >= 0 && tab < active_index,
           \'is_right': active_index >= 0 && tab >= active_index,
           \'is_active': is_active || is_next_active,
+          \'is_active_window': 1,
           \})
     let element.type = 'sep'
     call add(line, element)

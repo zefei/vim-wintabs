@@ -16,8 +16,7 @@ endfunction
 
 " jump to next/previous tab
 " next tab if offset == 1, previous tab if offset == -1
-" use confirm dialog if confim isn't 0
-function! wintabs#jump(offset, confirm)
+function! wintabs#jump(offset)
   call wintabs#refresh_buflist(0)
 
   let [n, found] = s:current_tab()
@@ -37,13 +36,23 @@ function! wintabs#jump(offset, confirm)
   let size = len(w:wintabs_buflist)
   let n = (n + offset) % size
   let n = n < 0 ? n + size : n
-  call s:switch_tab(n, a:confirm)
+  call s:switch_tab(n)
 endfunction
 
 " close current tab
 function! wintabs#close()
   call wintabs#refresh_buflist(0)
+  let buffer = bufnr('%')
 
+  " try to save buffer if it's modified, abort if save fails
+  if !s:can_be_closed(buffer)
+    confirm edit
+  endif
+  if !s:can_be_closed(buffer)
+    return
+  endif
+
+  call wintabs#refresh_buflist(0)
   let size = len(w:wintabs_buflist)
   let buffer = bufnr('%')
   let [n, found] = s:current_tab()
@@ -80,14 +89,8 @@ function! wintabs#close()
   if close_window
     call s:close_window()
   else
-    let occurrence = s:count_occurrence(buffer)
-    call s:switch_tab(switch_to, 1)
-
-    " only remove buffer that is unmodifed or displayed in some other window
-    " buffer remains modified if confirm dialog is canceled
-    if !getbufvar(buffer, '&modified') || occurrence > 1
-      call filter(w:wintabs_buflist, 'v:val != '.buffer)
-    endif
+    call s:switch_tab(switch_to)
+    call filter(w:wintabs_buflist, 'v:val != '.buffer)
   endif
 
   call s:post_delete(buffer)
@@ -126,11 +129,11 @@ function! wintabs#only()
   for buffer in w:wintabs_buflist
     if buffer == bufnr('%')
       call add(buflist, buffer)
-    elseif getbufvar(buffer, '&modified')
+    elseif s:can_be_closed(buffer)
+      call add(deleted_buflist, buffer)
+    else
       call add(buflist, buffer)
       let modified = 1
-    else
-      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -268,7 +271,7 @@ function! wintabs#go(n)
     return
   endif
 
-  call s:switch_tab(n, 0)
+  call s:switch_tab(n)
 endfunction
 
 " move the current tab by n tabs
@@ -381,6 +384,16 @@ function! wintabs#init()
       autocmd BufWinEnter,WinEnter,VimEnter * call wintabs#ui#set_statusline()
     augroup END
     call wintabs#ui#set_statusline()
+
+    " show original statusline in tabline
+    if !empty(g:wintabs_statusline)
+      set showtabline=2
+      let &tabline = g:wintabs_statusline
+      augroup wintabs_set_tabline
+        autocmd!
+        autocmd InsertEnter,InsertLeave,CursorMoved,CursorMovedI * :let &ro=&ro
+      augroup END
+    endif
   else
     autocmd BufWinEnter,WinEnter,VimEnter * call wintabs#refresh_buflist(0)
   endif
@@ -395,6 +408,14 @@ function! wintabs#init()
   augroup wintabs_switching_buffer
     autocmd!
     autocmd BufWinEnter * call wintabs#switching_buffer()
+  augroup END
+
+  " handle statuslie/tabline changes done by other plugins
+  augroup wintabs_override_plugin_changes
+    autocmd!
+    autocmd CmdwinEnter,CmdwinLeave,GUIEnter,ColorScheme,OptionSet,SourcePre,
+          \VimEnter,WinEnter,BufWinEnter,FileType,BufUnload,CompleteDone,
+          \VimResized,TabEnter,BufWritePost,SessionLoadPost * call s:override_plugin_changes()
   augroup END
 endfunction
 
@@ -450,28 +471,22 @@ function! wintabs#switching_buffer()
           continue
         endif
 
+        " buffer exists in another window
         if s:is_in_buflist(tabpage, window, buffer)
-          let to_close = exists('w:wintabs_buflist') ? 0 : winnr()
-          let same_tab = tabpage == tabpagenr()
-          if to_close && !same_tab
-            " close current window if it's a new window in a different tab
-            confirm close
-          else
-            " close current tab without autoclose
-            let autoclose = g:wintabs_autoclose
-            let g:wintabs_autoclose = 0
+          " if window isn't new (wintabs_buflist exists), close buffer
+          " otherwise close window since it's likely opened for this buffer
+          if exists('w:wintabs_buflist')
             call wintabs#close()
-            let g:wintabs_autoclose = autoclose
+          else
+            confirm close
           endif
 
-          " switch to the existing buffer
-          execute 'tabnext '.tabpage
-          execute window.'wincmd w'
-          execute 'confirm buffer '.buffer
-
-          " close previous window if it's a new window in current tab
-          if to_close && same_tab
-            execute to_close.'wincmd c'
+          " if vim supports async, switch to the existing buffer at next tick to 
+          " avoid racing with autocmds, otherwise switch immediately
+          if has('timers') && has('lambda')
+            call timer_start(0, {-> s:open_buffer_in(tabpage, window, buffer)})
+          else
+            call s:open_buffer_in(tabpage, window, buffer)
           endif
           return
         endif
@@ -522,24 +537,22 @@ function! s:current_tab()
   return [n, found]
 endfunction
 
-" switch to nth tab, or create a new tab if n < 0
+" switch to (n-1)th tab, or create a new tab if n < 0
 " do nothing if n >= number of tabs
-" use confirm dialog if confirm isn't 0
-function! s:switch_tab(n, confirm)
+function! s:switch_tab(n)
   " do nothing if n >= size
   if a:n >= len(w:wintabs_buflist)
     return
   endif
 
-  " set nohidden to trigger confirm behavior
+  " set hidden to keep changes in current buffer
   let hidden = &hidden
-  let &hidden = 0
+  let &hidden = 1
 
   if a:n < 0
-    execute a:confirm ? 'confirm enew' : 'enew!'
+    enew
   else
-    let buffer = w:wintabs_buflist[a:n]
-    execute a:confirm ? 'confirm buffer '.buffer : 'buffer! '.buffer
+    execute 'buffer '.w:wintabs_buflist[a:n]
   endif
 
   " restore hidden
@@ -563,7 +576,7 @@ function! s:close_window()
 
   " otherwise close all wintabs
   let w:wintabs_buflist = []
-  call s:switch_tab(-1, 1)
+  call s:switch_tab(-1)
 endfunction
 
 " close all tabs in current window and window itself
@@ -582,11 +595,11 @@ function! s:close_tabs_window()
 
   " keep modified tabs
   for buffer in w:wintabs_buflist
-    if getbufvar(buffer, '&modified')
+    if s:can_be_closed(buffer)
+      call add(deleted_buflist, buffer)
+    else
       call add(buflist, buffer)
       let modified = 1
-    else
-      call add(deleted_buflist, buffer)
     endif
   endfor
 
@@ -594,9 +607,9 @@ function! s:close_tabs_window()
     let s:modified = 1
     let w:wintabs_buflist = buflist
 
-    " if current buffer should be closed (not modified), switch to first tab
-    if !getbufvar(bufnr('%'), '&modified')
-      call s:switch_tab(0, 0)
+    " if current buffer should be closed, switch to first tab
+    if s:can_be_closed(bufnr('%'))
+      call s:switch_tab(0)
     endif
   else
     call s:close_window()
@@ -621,30 +634,55 @@ function! s:post_delete(buffer)
   call s:purge(a:buffer)
 endfunction
 
-" delete buffer from buflist if it isn't attached to any wintab
+" delete buffer from buflist if it's safe to do so: the buffer must be listed, 
+" not modified, not attached to any window, not shown in any window
 function! s:purge(buffer)
   if !buflisted(a:buffer)
+        \|| getbufvar(a:buffer, '&modified')
+        \|| s:count_occurrence(a:buffer) > 0
     return
   endif
   for tabpage in range(1, tabpagenr('$'))
     if index(tabpagebuflist(tabpage), a:buffer) != -1
       return
     endif
-    for window in range(1, tabpagewinnr(tabpage, '$'))
-      if s:is_in_buflist(tabpage, window, a:buffer)
-        return
-      endif
-    endfor
   endfor
   execute 'bdelete '.a:buffer
 endfunction
 
-" count in how many windows in all vimtabs a buffer is shown
+" count in how many windows in all vimtabs a buffer is attached
 function! s:count_occurrence(buffer)
-  let buflist = []
-  for i in range(tabpagenr('$'))
-    call extend(buflist, tabpagebuflist(i + 1))
+  let occurrences = 0
+  for tabpage in range(1, tabpagenr('$'))
+    for window in range(1, tabpagewinnr(tabpage, '$'))
+      if s:is_in_buflist(tabpage, window, a:buffer)
+        let occurrences += 1
+      endif
+    endfor
   endfor
-  return count(buflist, a:buffer)
+  return occurrences
 endfunction
 
+" test if a buffer can be safely closed: it can if it isn't modified, or it's 
+" attached to more than one window
+function! s:can_be_closed(buffer)
+  return !getbufvar(a:buffer, '&modified') || s:count_occurrence(a:buffer) > 1
+endfunction
+
+" open a buffer inside a particular window
+function! s:open_buffer_in(tabpage, window, buffer)
+  execute 'tabnext '.a:tabpage
+  execute a:window.'wincmd w'
+  execute 'confirm buffer '.a:buffer
+endfunction
+
+" override statusline/tabline changes made by other plugins
+function! s:override_plugin_changes()
+  if g:wintabs_display == 'tabline'
+        \&& match(&tabline, '%!wintabs#ui#get_tabline') == -1
+    set tabline=%!wintabs#ui#get_tabline()
+  elseif g:wintabs_display == 'statusline'
+        \&& match(&statusline, '%!wintabs#ui#get_statusline') == -1
+    call wintabs#ui#set_statusline()
+  endif
+endfunction

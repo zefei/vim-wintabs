@@ -26,14 +26,23 @@ Using Powerline fonts:
 
 # Installation
 
-Use your favorite package manager to install:
+Use your favorite package manager to install. `vim-wintabs-powerline` is 
+optional, used for Powerline style rendering.
 
-* [Pathogen](https://github.com/tpope/vim-pathogen)
-  * `git clone https://github.com/zefei/vim-wintabs ~/.vim/bundle/vim-wintabs`
-* [Vundle](https://github.com/gmarik/Vundle.vim)
-  * `Plugin 'zefei/vim-wintabs'`
-* [NeoBundle](https://github.com/Shougo/neobundle.vim)
-  * `NeoBundle 'zefei/vim-wintabs'`
+[pathogen](https://github.com/tpope/vim-pathogen)
+
+    git clone https://github.com/zefei/vim-wintabs ~/.vim/bundle/vim-wintabs
+    git clone https://github.com/zefei/vim-wintabs-powerline ~/.vim/bundle/vim-wintabs-powerline
+
+[vundle](https://github.com/vundlevim/vundle.vim)
+
+    plugin 'zefei/vim-wintabs'
+    plugin 'zefei/vim-wintabs-powerline'
+
+[vim-plug](https://github.com/junegunn/vim-plug)
+
+    plug 'zefei/vim-wintabs'
+    plug 'zefei/vim-wintabs-powerline'
 
 # Usage
 
@@ -71,6 +80,11 @@ Below is an example of key mappings:
 
 See `:help wintabs-commands` for all available commands and mappings.
 
+Wintabs can display buffers on either tabline or statusline. It's recommended to 
+use tabline if you typically work without using split windows; otherwise, 
+statusline is recommended. If Wintabs is set to use statusline, it automatically 
+moves your original statusline content to tabline.
+
 # Configuration
 
 Wintabs has a handful of configuration options, see `:help wintabs-options` for 
@@ -78,16 +92,22 @@ details.
 
 # FAQ
 
-A: Does wintabs support Powerline fonts?
+Q: Does wintabs support Powerline fonts?
 
-Q: Yes. The [vim-wintabs-powerline addon](https://github.com/zefei/vim-wintabs-powerline) provides a set of renderers for using 
-Powerline fonts with wintabs.
+A: Yes. The [vim-wintabs-powerline 
+plugin](https://github.com/zefei/vim-wintabs-powerline) provides a set of 
+renderers for using Powerline fonts with wintabs.
 
-A: Does wintabs support Vim sessions?
+Q: Does wintabs support Vim sessions?
 
-Q: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also 
+A: Yes, as long as your `sessionoptions` contains `"globals"`. Wintabs also 
 supports [xolox/vim-session](https://github.com/xolox/vim-session) out of the 
 box.
+
+Q: Does wintabs work with statusline/tabline plugins like airline?
+
+A: Wintabs can work reasonably well with statusline/tabline plugins as long as 
+you load wintabs after other plugins.
 
 # License
 

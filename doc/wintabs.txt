@@ -55,6 +55,11 @@ Below is an example of key mappings:>
 
 See wintabs-commands for all available commands and mappings.
 
+Wintabs can display buffers on either tabline or statusline. It's recommended 
+to use tabline if you typically work without using split windows; otherwise, 
+statusline is recommended. If Wintabs is set to use statusline, it 
+automatically moves your original statusline content to tabline.
+
 ==============================================================================
 COMMANDS AND MAPPINGS                                       *wintabs-commands*
 
@@ -159,6 +164,9 @@ OPTIONS                                                      *wintabs-options*
 values: 'tabline', 'statusline', or 'none'
 default: 'tabline'
                 This controls where wintabs are drawn.
+                'tabline' is recommended if you typically work without using 
+                split windows.
+                Otherwise, 'statusline' is recommended.
 
 *g:wintabs_autoclose*
 values: 0, 1, or 2
@@ -187,13 +195,23 @@ default: 0
 
 *g:wintabs_switchbuf*
 values: '', 'useopen', or 'usetab'
-default: ''
+default: value of |switchbuf| option
                 This controls the behavior when switching between buffers.
                 'useopen': jump to the first window in current vim tab that 
                 contains the specific buffer. Otherwise open it in current 
                 window.
                 'usetab': similar to 'useopen' but searches in all vim tabs.
                 '': always open in current window.
+
+*g:wintabs_statusline*
+values: |statusline| string
+default: value of |statusline| option
+                When |g:wintabs_display| is set to 'statusline', wintabs 
+                occupies current statusline and moves the original statusline 
+                content to tabline.
+                By default, this option is set to what 'original statusline' 
+                is. If vim-airline is installed, airline#statusline() is used.
+                Set this option to empty string to disable this behavior.
 
 *g:wintabs_ignored_filetypes*
 values: list of filetype strings
@@ -282,15 +300,20 @@ default: 'TabLineSel' or 'Normal', depending on |g:wintabs_display|
 ==============================================================================
 FAQ                                                              *wintabs-faq*
 
-A: Does wintabs support Powerline fonts?
+Q: Does wintabs support Powerline fonts?
 
-Q: Yes. The vim-wintabs-powerline addon provides a set of renderers for using 
+A: Yes. The vim-wintabs-powerline addon provides a set of renderers for using 
 Powerline fonts with wintabs.
 
-A: Does wintabs support Vim sessions?
+Q: Does wintabs support Vim sessions?
 
-Q: Yes, as long as your |'sessionoptions'| contains "globals". Wintabs also 
+A: Yes, as long as your |'sessionoptions'| contains "globals". Wintabs also 
 supports xolox/vim-session plugin out of the box.
+
+Q: Does wintabs work with statusline/tabline plugins like airline?
+
+A: Wintabs can work reasonably well with statusline/tabline plugins as long as 
+you load wintabs after other plugins.
 
 ==============================================================================
 

@@ -150,14 +150,14 @@ endfunction
 " neovim click handler for left arrow
 function! wintabs#element#left_arrow_click(_, click_count, button, modifiers)
   if a:button == 'l'
-    call wintabs#jump(-1, 0)
+    call wintabs#jump(-1)
   endif
 endfunction
 
 " neovim click handler for right arrow
 function! wintabs#element#right_arrow_click(_, click_count, button, modifiers)
   if a:button == 'l'
-    call wintabs#jump(1, 0)
+    call wintabs#jump(1)
   endif
 endfunction
 

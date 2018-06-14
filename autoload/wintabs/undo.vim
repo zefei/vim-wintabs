@@ -14,7 +14,7 @@ function! wintabs#undo#init()
 endfunction
 
 function! wintabs#undo#push(buffer)
-  let pathname = bufname(a:buffer)
+  let pathname = fnamemodify(bufname(a:buffer), ':p')
   if !buflisted(a:buffer) || !filereadable(pathname)
     return
   endif
