@@ -112,9 +112,14 @@ function! SaveAndCloseCurrentBuffer()
   :w
   call wintabs#close()
 endfunction
+
 call CommandCabbr('q', 'call wintabs#close()')
 call CommandCabbr('q!', 'call wintabs#close()') " NOTE: Still asks for confirmation if not saved
 call CommandCabbr('wq', 'call SaveAndCloseCurrentBuffer()')
+
+" Automatically close tabs to make wq/q/q! behave more normally
+let g:wintabs_autoclose_vim = 1
+let g:wintabs_autoclose_vimtab = 1
 ```
 
 # FAQ
