@@ -120,6 +120,7 @@ call CommandCabbr('wq', 'call SaveAndCloseCurrentBuffer()')
 " Automatically close tabs to make wq/q/q! behave more normally
 let g:wintabs_autoclose_vim = 1
 let g:wintabs_autoclose_vimtab = 1
+let g:wintabs_autoclose = 2
 ```
 
 # FAQ
