@@ -46,7 +46,10 @@ function! wintabs#close()
 
   " try to save buffer if it's modified, abort if save fails
   if !s:can_be_closed(buffer)
-    confirm edit
+    try
+      confirm edit
+    catch
+    endtry
   endif
   if !s:can_be_closed(buffer)
     return
