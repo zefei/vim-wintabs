@@ -48,7 +48,7 @@ function! wintabs#close()
   if !s:can_be_closed(buffer)
     try
       confirm edit
-    catch
+    catch /E32:/
     endtry
   endif
   if !s:can_be_closed(buffer)

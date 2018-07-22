@@ -17,6 +17,9 @@ endfunction
 
 " save buflist of one window to session
 function! wintabs#session#save(tabpage, window)
+  if exists('SessionLoad')
+    echom SessionLoad
+  endif
   " if tabpages count is correct, refresh passed tabpages, otherwise refresh all 
   " tabpages
   if len(s:session) == tabpagenr('$')
