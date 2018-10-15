@@ -370,6 +370,8 @@ endfunction
 
 " set tabline/statusline
 function! wintabs#init()
+  call wintabs#refresh_buflist(0)
+
   if g:wintabs_display == 'tabline'
     " disable gui tabline
     if has('gui_running')
