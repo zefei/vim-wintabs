@@ -114,11 +114,12 @@ function! wintabs#renderers#bufname(bufnr)
 endfunction
 
 function! wintabs#renderers#buf_label(bufnr)
-  let label = g:wintabs_ui_buffer_name_format
-  let label = substitute(label, "%t", wintabs#renderers#bufname(a:bufnr), "g")
-  let label = substitute(label, "%n", a:bufnr, "g")
-  return label
+    let label = g:wintabs_ui_buffer_name_format
+    let label = substitute(label, "%t", wintabs#renderers#bufname(a:bufnr), "g")
+    let label = substitute(label, "%n", index(w:wintabs_buflist, a:bufnr) + 1, "g")
+    return label
 endfunction
+
 
 function! wintabs#renderers#tab_label(tabnr)
   let label = ''
