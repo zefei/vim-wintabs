@@ -18,7 +18,7 @@ endfunction
 " save buflist of one window to session
 function! wintabs#session#save(tabpage, window)
   " do not save session during SessionLoadPost autocmd
-  if exists('SessionLoad')
+  if exists('g:SessionLoad')
     return
   endif
 
