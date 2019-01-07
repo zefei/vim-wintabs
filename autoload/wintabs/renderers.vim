@@ -14,7 +14,7 @@ endfunction
 function! wintabs#renderers#buffer(bufnr, config)
   let is_active = a:config.is_active && a:config.is_active_window
   return {
-        \'label': wintabs#renderers#buf_label(a:bufnr),
+        \'label': wintabs#renderers#buf_label(a:bufnr, a:config),
         \'highlight': is_active ? g:wintabs_ui_active_higroup : '',
         \}
 endfunction
@@ -113,10 +113,11 @@ function! wintabs#renderers#bufname(bufnr)
   return name
 endfunction
 
-function! wintabs#renderers#buf_label(bufnr)
+function! wintabs#renderers#buf_label(bufnr, config)
   let label = g:wintabs_ui_buffer_name_format
   let label = substitute(label, "%t", wintabs#renderers#bufname(a:bufnr), "g")
   let label = substitute(label, "%n", a:bufnr, "g")
+  let label = substitute(label, "%o", a:config.ordinal, "g")
   return label
 endfunction
 

@@ -89,6 +89,7 @@ function! s:get_bufline_non_memoized(window, ...)
             \'is_right': 0,
             \'is_active': is_active,
             \'is_active_window': is_active_window,
+            \'ordinal': i + 1,
             \})
       let element.type = 'sep'
       call add(line, element)
@@ -101,6 +102,7 @@ function! s:get_bufline_non_memoized(window, ...)
           \'is_right': active_index >= 0 && i > active_index,
           \'is_active': is_active,
           \'is_active_window': is_active_window,
+          \'ordinal': i + 1,
           \})
     let element.type = 'buffer'
     let element.number = buffer
@@ -117,6 +119,7 @@ function! s:get_bufline_non_memoized(window, ...)
           \'is_right': active_index >= 0 && i >= active_index,
           \'is_active': is_active || is_next_active,
           \'is_active_window': is_active_window,
+          \'ordinal': i + 1,
           \})
     let element.type = 'sep'
     call add(line, element)
@@ -251,6 +254,7 @@ function! s:get_spaceline()
             \'is_right': 0,
             \'is_active': is_active,
             \'is_active_window': 1,
+            \'ordinal': tab,
             \})
       let element.type = 'sep'
       call add(line, element)
@@ -263,6 +267,7 @@ function! s:get_spaceline()
           \'is_right': active_index >= 0 && tab > active_index,
           \'is_active': is_active,
           \'is_active_window': 1,
+          \'ordinal': tab,
           \})
     let element.type = 'tab'
     let element.number = tab
@@ -275,6 +280,7 @@ function! s:get_spaceline()
           \'is_right': active_index >= 0 && tab >= active_index,
           \'is_active': is_active || is_next_active,
           \'is_active_window': 1,
+          \'ordinal': tab,
           \})
     let element.type = 'sep'
     call add(line, element)

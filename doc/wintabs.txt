@@ -273,7 +273,8 @@ default: ' %t '
                 By default it is only name of buffer. But you can use the
                 following arguments:
                 '%t': name of buffer
-                '%n': number of buffer
+                '%n': |bufnr()| of buffer
+                '%o': ordinal number of buffer
 
 *g:wintabs_ui_vimtab_name_format*
 values: string
