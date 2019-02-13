@@ -1,6 +1,6 @@
 " generate tabline, very straight forward
 function! wintabs#ui#get_tabline()
-  let spaceline = s:get_spaceline()
+  let spaceline = [g:wintabs_renderers.line_sep(), s:get_spaceline()]
   let bufline = s:truncate_line(
         \0,
         \s:get_bufline(0),
@@ -41,6 +41,11 @@ function! wintabs#ui#reset_statusline(window)
     call wintabs#ui#set_statusline()
   endif
   return ''
+endfunction
+
+" public function to expose fragment for vimtabs
+function! wintabs#ui#get_vimtabs_fragment()
+  return wintabs#element#render(s:get_spaceline())
 endfunction
 
 " private functions below
@@ -239,7 +244,7 @@ function! s:get_spaceline()
     return ['', 0]
   endif
 
-  let line = [g:wintabs_renderers.line_sep()]
+  let line = []
   let active_index = tabpagenr()
 
   for tab in range(1, spaces)
