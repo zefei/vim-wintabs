@@ -90,6 +90,39 @@ moves your original statusline content to tabline.
 Wintabs has a handful of configuration options, see `:help wintabs-options` for 
 details.
 
+## Overriding wq/q/q!
+
+If you want `wq`, `q`, and `q!` to close the current buffer, without closing the
+other buffers, add this to your `.vimrc`:
+
+```vim
+" Function to replace built in commands
+" Taken from: http://vim.wikia.com/wiki/Replace_a_builtin_command_using_cabbrev
+function! CommandCabbr(abbreviation, expansion)
+  execute 'cabbr '
+        \. a:abbreviation
+        \. ' <c-r>=getcmdpos() == 1 && getcmdtype() == ":" ? "'
+        \. a:expansion
+        \. '" : "'
+        \. a:abbreviation
+        \. '"<CR>'
+endfunction
+
+function! SaveAndCloseCurrentBuffer()
+  :w
+  call wintabs#close()
+endfunction
+
+call CommandCabbr('q', 'call wintabs#close()')
+call CommandCabbr('q!', 'call wintabs#close()') " NOTE: Still asks for confirmation if not saved
+call CommandCabbr('wq', 'call SaveAndCloseCurrentBuffer()')
+
+" Automatically close tabs to make wq/q/q! behave more normally
+let g:wintabs_autoclose_vim = 1
+let g:wintabs_autoclose_vimtab = 1
+let g:wintabs_autoclose = 2
+```
+
 # FAQ
 
 Q: Does wintabs support Powerline fonts?
