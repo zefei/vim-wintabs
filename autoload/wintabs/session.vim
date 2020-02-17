@@ -17,8 +17,8 @@ endfunction
 
 " save buflist of one window to session
 function! wintabs#session#save(tabpage, window)
-  " do not save session during SessionLoadPost autocmd
-  if exists('g:SessionLoad')
+  " skip while loading session
+  if exists('g:SessionLoad') || exists('g:wintabs_session_load')
     return
   endif
 
@@ -49,6 +49,9 @@ endfunction
 
 " load session
 function! wintabs#session#load()
+  " not all invocations of SessionLoadPost set g:SessionLoad.
+  let g:wintabs_session_load = 1
+
   execute 'let s:session = '.g:Wintabs_session_string
 
   for [tabpage, winlist] in items(s:session)
@@ -77,6 +80,8 @@ function! wintabs#session#load()
 
   " refresh tabline
   call wintabs#init()
+
+  unlet g:wintabs_session_load
 endfunction
 
 function! s:session_save_window(tabpage, window)
