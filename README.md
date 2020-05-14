@@ -41,8 +41,8 @@ optional, used for Powerline style rendering.
 
 [vim-plug](https://github.com/junegunn/vim-plug)
 
-    plug 'zefei/vim-wintabs'
-    plug 'zefei/vim-wintabs-powerline'
+    Plug 'zefei/vim-wintabs'
+    Plug 'zefei/vim-wintabs-powerline'
 
 # Usage
 
