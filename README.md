@@ -36,8 +36,8 @@ optional, used for Powerline style rendering.
 
 [vundle](https://github.com/vundlevim/vundle.vim)
 
-    plugin 'zefei/vim-wintabs'
-    plugin 'zefei/vim-wintabs-powerline'
+    Plugin 'zefei/vim-wintabs'
+    Plugin 'zefei/vim-wintabs-powerline'
 
 [vim-plug](https://github.com/junegunn/vim-plug)
 
