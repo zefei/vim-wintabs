@@ -100,7 +100,11 @@ function! wintabs#renderers#padding(len)
 endfunction
 
 function! wintabs#renderers#bufname(bufnr)
-  let name = fnamemodify(bufname(a:bufnr), ':t')
+  if exists('*Wintabs_ui_bufname')
+    let name = g:Wintabs_ui_bufname(a:bufnr)
+  else
+    let name = fnamemodify(bufname(a:bufnr), ':t')
+  endif
   let name = substitute(name, '%', '%%', 'g')
   if empty(name)
     let name = '[No Name]'
