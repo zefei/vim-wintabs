@@ -278,6 +278,27 @@ default: ' %t '
                 '%n': |bufnr()| of buffer
                 '%o': ordinal number of buffer
 
+*g:Wintabs_ui_bufname*
+values: function
+                Function that generates the file name to be used as '%t' for
+                |g:wintabs_ui_vimtab_name_format|.
+                By default this uses the file name without any directories
+                ('%:t').
+                You can use this, for example, to display 'my-button/i'
+                instead of 'index.tsx' for the file 'src/my-button/index.tsx'
+                for a more useful tabline in JavaScript/TypeScript codebases.
+
+                    function! g:Wintabs_ui_bufname(bufnr)
+                      let file = fnamemodify(bufname(a:bufnr), ':t')
+
+                      if index(['index.tsx', 'index.ts', 'index.jsx', 'index.js'], file) != -1
+                        let parent_dir = fnamemodify(bufname(a:bufnr), ':h:t')
+                        return parent_dir . '/i'
+                      endif
+
+                      return file
+                    endfunction
+
 *g:wintabs_ui_vimtab_name_format*
 values: string
 default: ' %n '
